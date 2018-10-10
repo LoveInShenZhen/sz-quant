@@ -22,6 +22,7 @@ target/
 .settings/
 .vertx/
 .vscode/
+h2db/
 bin/
 classes/
 RUNNING_PID
