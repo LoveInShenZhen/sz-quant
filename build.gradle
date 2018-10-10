@@ -1,0 +1,56 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.2.61"
+}
+
+allprojects {
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+
+    repositories {
+        flatDir {
+            dirs "$rootDir/libs"
+        }
+        mavenLocal()
+        maven {
+            name "nexus-huaweicloud"
+            url "https://mirrors.huaweicloud.com/repository/maven/"
+        }
+        jcenter()
+//        maven { url 'https://jitpack.io' }
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61"
+        compile "org.jetbrains.kotlin:kotlin-reflect:1.2.61"
+//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-scaffold:-SNAPSHOT'
+//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-ebean:-SNAPSHOT'
+//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-api-doc:-SNAPSHOT'
+//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-plan-task:-SNAPSHOT'
+
+        compile group: 'com.github.kklongming', name: 'sz-scaffold', version: 'unspecified'
+        compile group: 'com.github.kklongming', name: 'sz-ebean', version: 'unspecified'
+        compile group: 'com.github.kklongming', name: 'sz-api-doc', version: 'unspecified'
+        compile group: 'com.github.kklongming', name: 'sz-plan-task', version: 'unspecified'
+
+    }
+
+//    configurations.all {
+//        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//    }
+}
+
+dependencies {
+    compile project(':models')
+    compile project(':common_lib')
+    compile project(':api_server')
+}
+
+task usage {
+
+    println('\u001b[32m 运行 api_server (debug 模式, debug端口:5005) 命令             gradle :api_server:run -Pdebug \u001B[0m')
+}
