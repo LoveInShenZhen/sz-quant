@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.ebean:ebean-gradle-plugin:11.11.1"
+        classpath "io.ebean:ebean-gradle-plugin:11.10.1"
     }
 }
 
