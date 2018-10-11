@@ -16,6 +16,8 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     kapt "io.ebean:kotlin-querybean-generator:11.4.1"
+
+    compile group: 'com.github.kklongming', name: 'sz-ebean', version: 'unspecified'
 }
 
 ebean {

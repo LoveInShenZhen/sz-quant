@@ -1,6 +1,10 @@
 apply plugin: 'application'
 
 dependencies {
+    compile group: 'com.github.kklongming', name: 'sz-ebean', version: 'unspecified'
+    compile group: 'com.github.kklongming', name: 'sz-api-doc', version: 'unspecified'
+    compile group: 'com.github.kklongming', name: 'sz-plan-task', version: 'unspecified'
+
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.58'
 
@@ -9,6 +13,7 @@ dependencies {
 
     compile project(':common_lib')
     compile project(':models')
+    compile project(':sz-tushare')
     compile files("conf")
 }
 
@@ -26,7 +31,7 @@ distTar {
     }
 }
 
-mainClassName = 'com.api.server.ApiServer'
+mainClassName = 'sz.api.server.ApiServer'
 // 可以在此添加jvm内存参数, eg: '-Xms512m', '-Xmx4096m'
 applicationDefaultJvmArgs = ['-Duser.timezone=GMT+8', '-Dfile.encoding=UTF-8', '-Dsun.jnu.encoding=UTF-8']
 

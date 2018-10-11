@@ -1,3 +1,5 @@
 include ':models'
 include ':common_lib'
 include ':api_server'
+include ':sz-tushare'
+

@@ -5,6 +5,8 @@ plugins {
 allprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
 
+    group = 'com.github.kklongming'
+
     repositories {
         flatDir {
             dirs "$rootDir/libs"
@@ -27,15 +29,11 @@ allprojects {
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61"
         compile "org.jetbrains.kotlin:kotlin-reflect:1.2.61"
-//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-scaffold:-SNAPSHOT'
-//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-ebean:-SNAPSHOT'
-//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-api-doc:-SNAPSHOT'
-//        compile 'com.github.kklongming.sz-vertx-kotlin:sz-plan-task:-SNAPSHOT'
 
         compile group: 'com.github.kklongming', name: 'sz-scaffold', version: 'unspecified'
-        compile group: 'com.github.kklongming', name: 'sz-ebean', version: 'unspecified'
-        compile group: 'com.github.kklongming', name: 'sz-api-doc', version: 'unspecified'
-        compile group: 'com.github.kklongming', name: 'sz-plan-task', version: 'unspecified'
+//        compile group: 'com.github.kklongming', name: 'sz-ebean', version: 'unspecified'
+//        compile group: 'com.github.kklongming', name: 'sz-api-doc', version: 'unspecified'
+//        compile group: 'com.github.kklongming', name: 'sz-plan-task', version: 'unspecified'
 
     }
 
