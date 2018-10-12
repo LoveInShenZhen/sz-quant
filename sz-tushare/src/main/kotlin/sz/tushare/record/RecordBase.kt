@@ -2,6 +2,7 @@ package sz.tushare.record
 
 import sz.scaffold.annotations.Comment
 import sz.scaffold.tools.BizLogicException
+import sz.tushare.ResultPayload
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.*
@@ -52,6 +53,18 @@ open class RecordBase {
                         .filter { it is KMutableProperty<*> }
                         .map { Pair(it.name, it as KMutableProperty<*>) }
                         .toMap()
+            }
+        }
+
+        inline fun <reified T : RecordBase> buildFrom(resultPayload: ResultPayload) : List<T> {
+            if (resultPayload.code != 0) {
+                throw BizLogicException("result code: ${resultPayload.code}, msg: ${resultPayload.msg}")
+            }
+
+            return resultPayload.data.items.map { values ->
+                val bean = T::class.java.newInstance()
+                bean.fillData(resultPayload.data.fields, values)
+                bean
             }
         }
 

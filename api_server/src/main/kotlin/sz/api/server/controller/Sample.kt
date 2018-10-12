@@ -38,11 +38,11 @@ class Sample : ApiController() {
 //        }
 //
 
-        val records = TushareApi.stockBasic(is_hs = "N", list_status = "L", exchange_id = "SZSE")
+        val records = TushareApi.tradeCal(exchange_id = "SZSE")
 
         Logger.debug(records.first().toJsonPretty())
 
-        TsRecord.saveToFile("/Users/kk/work/tmp/tushare_data/stock_basic/${JDateTime().toString("YYYY_MM_DD-hh_mm_ss")}.csv", records)
+        TsRecord.saveToFile("/Users/kk/work/tmp/tushare_data/trade_cal/${JDateTime().toString("YYYY_MM_DD-hh_mm_ss")}.csv", records)
 
 
 //        val path = "/Users/kk/work/tmp/tushare_data/stock_basic/2018_10_12-00_16_01.csv"
