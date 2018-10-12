@@ -86,5 +86,5 @@ class ResultPayload {
 class DataPart {
     var fields = listOf<String>()
 
-    var items = listOf<List<Any>>()
+    var items = listOf<List<Any?>>()
 }

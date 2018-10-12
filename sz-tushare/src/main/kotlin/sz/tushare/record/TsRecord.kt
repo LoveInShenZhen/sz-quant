@@ -7,11 +7,15 @@ import sz.scaffold.tools.csv.CSV
 //
 object TsRecord {
 
-    fun saveToFile(csvFilePath: String, beans: List<*>, clazz: Class<*>) {
-        CSV.saveToFile(csvFilePath, beans, clazz, true)
+    fun saveToFile(csvFilePath: String, beans: List<*>, clazz: Class<*>, append: Boolean = true) {
+        CSV.saveToFile(csvFilePath, beans, clazz, append)
     }
 
-    fun <T> loadFromFile(csvFilePath: String, clazz: Class<T>): List<T> {
-        TODO()
+    inline fun <reified T : Any> saveToFile(csvFilePath: String, beans: List<T>, append: Boolean = true) {
+        CSV.saveToFile(csvFilePath, beans, T::class.java, append)
+    }
+
+    inline fun <reified T : Any> loadFromFile(csvFilePath: String): List<T> {
+        return CSV.loadFromFile(csvFilePath)
     }
 }

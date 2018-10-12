@@ -4,6 +4,7 @@ import jodd.datetime.JDateTime
 import sz.api.server.controller.reply.HelloReply
 import sz.scaffold.annotations.Comment
 import sz.scaffold.controller.ApiController
+import sz.scaffold.tools.csv.CSV
 import sz.scaffold.tools.json.toJsonPretty
 import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
@@ -41,7 +42,16 @@ class Sample : ApiController() {
 
         Logger.debug(records.first().toJsonPretty())
 
-        TsRecord.saveToFile("/Users/kk/work/tmp/tushare_data/stock_basic/${JDateTime().toString("YYYY_MM_DD-hh_mm_ss")}.csv", records, StockBasicRecord::class.java)
+        TsRecord.saveToFile("/Users/kk/work/tmp/tushare_data/stock_basic/${JDateTime().toString("YYYY_MM_DD-hh_mm_ss")}.csv", records)
+
+
+//        val path = "/Users/kk/work/tmp/tushare_data/stock_basic/2018_10_12-00_16_01.csv"
+//
+//        val datas = TsRecord.loadFromFile<StockBasicRecord>(path)
+//
+//        datas.forEach {
+//            Logger.debug("\n${it.toJsonPretty()}")
+//        }
 
         return reply
     }
