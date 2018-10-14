@@ -6,6 +6,11 @@ import sz.scaffold.annotations.Comment
 //
 // Created by kk on 2018/10/12.
 //
+
+/**
+ * 交易日历
+ * 参考: https://tushare.pro/document/2?doc_id=26
+ */
 class TradeCalRecord : RecordBase() {
 
     @Comment("交易所: SSE-上交所 SZSE-深交所")
