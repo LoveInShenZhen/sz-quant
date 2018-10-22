@@ -171,6 +171,8 @@ object TushareApi {
 
     //</editor-fold>
 
+    //<editor-fold desc="行情数据">
+
     /**
      * 日线行情(异步方式)
      * 获取股票行情数据，或通过通用行情接口获取数据，包含了前后复权数据．
@@ -209,5 +211,198 @@ object TushareApi {
      */
     fun daily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<Daily> {
         return dailyAsync(ts_code, trade_date, start_date, end_date).get()
+    }
+
+    /**
+     * 复权因子(异步方式)
+     * 获取股票复权因子，可提取单只股票全部历史复权因子，也可以提取单日全部股票的复权因子
+     * 参考: https://tushare.pro/document/2?doc_id=28
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）, YYYYMMDD
+     * @param start_date 开始日期, YYYYMMDD
+     * @param end_date 结束日期, YYYYMMDD
+     */
+    fun adjFactorAsync(ts_code: String, trade_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<AdjFactor>> {
+        val api = ApiPayload()
+        api.api_name = "adj_factor"
+        api.addParam("ts_code", ts_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = AdjFactor().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<AdjFactor>(payload)
+        }
+    }
+
+    /**
+     * 复权因子
+     * 获取股票复权因子，可提取单只股票全部历史复权因子，也可以提取单日全部股票的复权因子
+     * 参考: https://tushare.pro/document/2?doc_id=28
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）, YYYYMMDD
+     * @param start_date 开始日期, YYYYMMDD
+     * @param end_date 结束日期, YYYYMMDD
+     */
+    fun adjFactor(ts_code: String, trade_date: String = "", start_date: String = "", end_date: String = ""): List<AdjFactor> {
+        return adjFactorAsync(ts_code, trade_date, start_date, end_date).get()
+    }
+
+    /**
+     * 停复牌信息(异步方式)
+     * 获取股票每日停复牌信息
+     * 参考: https://tushare.pro/document/2?doc_id=31
+     *
+     * @param ts_code 股票代码 (三选一)
+     * @param suspend_date 停牌日期 (三选一)
+     * @param resume_date 复牌日期 (三选一)
+     */
+    fun suspendAsync(ts_code: String = "", suspend_date: String = "", resume_date: String = ""): CompletableFuture<List<Suspend>> {
+        val api = ApiPayload()
+        api.api_name = "suspend"
+        api.addParam("ts_code", ts_code)
+                .addParam("suspend_date", suspend_date)
+                .addParam("resume_date", resume_date)
+
+        api.fields = Suspend().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Suspend>(payload)
+        }
+    }
+
+    /**
+     * 停复牌信息
+     * 获取股票每日停复牌信息
+     * 参考: https://tushare.pro/document/2?doc_id=31
+     *
+     * @param ts_code 股票代码 (三选一)
+     * @param suspend_date 停牌日期 (三选一)
+     * @param resume_date 复牌日期 (三选一)
+     */
+    fun suspend(ts_code: String = "", suspend_date: String = "", resume_date: String = ""): List<Suspend> {
+        return suspendAsync(ts_code, suspend_date, resume_date).get()
+    }
+
+    /**
+     * 每日指标(异步方式)
+     * 获取全部股票每日重要的基本面指标，可用于选股分析、报表展示等。
+     * 参考: https://tushare.pro/document/2?doc_id=32
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）, YYYYMMDD
+     * @param start_date 开始日期, YYYYMMDD
+     * @param end_date 结束日期, YYYYMMDD
+     */
+    fun dailyBasicAsync(ts_code: String, trade_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<DailyBasic>> {
+        val api = ApiPayload()
+        api.api_name = "daily_basic"
+        api.addParam("ts_code", ts_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = DailyBasic().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<DailyBasic>(payload)
+        }
+    }
+
+    /**
+     * 每日指标
+     * 获取全部股票每日重要的基本面指标，可用于选股分析、报表展示等。
+     * 参考: https://tushare.pro/document/2?doc_id=32
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）, YYYYMMDD
+     * @param start_date 开始日期, YYYYMMDD
+     * @param end_date 结束日期, YYYYMMDD
+     */
+    fun dailyBasic(ts_code: String, trade_date: String = "", start_date: String = "", end_date: String = ""): List<DailyBasic> {
+        return dailyBasicAsync(ts_code, trade_date, start_date, end_date).get()
+    }
+
+
+    //</editor-fold>
+
+    /**
+     * 获取指数基础信息(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=94
+     *
+     * @param market 交易所或服务商
+     * @param publisher 发布商
+     * @param category 指数类别
+     */
+    fun indexBasicAsync(market: String, publisher: String = "", category: String = ""): CompletableFuture<List<IndexBasic>> {
+        val api = ApiPayload()
+        api.api_name = "index_basic"
+        api.addParam("market", market)
+                .addParam("publisher", publisher)
+                .addParam("category", category)
+
+        api.fields = IndexBasic().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<IndexBasic>(payload)
+        }
+    }
+
+    /**
+     * 获取指数基础信息
+     * 参考: https://tushare.pro/document/2?doc_id=94
+     *
+     * @param market 交易所或服务商
+     * @param publisher 发布商
+     * @param category 指数类别
+     */
+    fun indexBasic(market: String, publisher: String = "", category: String = ""): List<IndexBasic> {
+        return indexBasicAsync(market, publisher, category).get()
+    }
+
+    /**
+     * 指数日线行情(异步方式)
+     * 获取指数每日行情，还可以通过bar接口获取。由于服务器压力，目前规则是单次调取最多取2800行记录，可以设置start和end日期补全。指数行情也可以通过通用行情接口获取数据．
+     *
+     * @param ts_code 指数代码
+     * @param trade_date 交易日期, YYYYMMDD
+     * @param start_date 开始日期, YYYYMMDD
+     * @param end_date 结束日期, YYYYMMDD
+     */
+    fun indexDailyAsync(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<IndexDaily>> {
+        val api = ApiPayload()
+        api.api_name = "index_daily"
+        api.addParam("ts_code", ts_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = IndexDaily().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<IndexDaily>(payload)
+        }
+    }
+
+    /**
+     * 指数日线行情
+     * 获取指数每日行情，还可以通过bar接口获取。由于服务器压力，目前规则是单次调取最多取2800行记录，可以设置start和end日期补全。指数行情也可以通过通用行情接口获取数据．
+     *
+     * @param ts_code 指数代码
+     * @param trade_date 交易日期, YYYYMMDD
+     * @param start_date 开始日期, YYYYMMDD
+     * @param end_date 结束日期, YYYYMMDD
+     */
+    fun indexDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<IndexDaily> {
+        return indexDailyAsync(ts_code, trade_date, start_date, end_date).get()
     }
 }

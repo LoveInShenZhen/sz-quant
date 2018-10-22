@@ -21,7 +21,7 @@ class TradeCalRecord : RecordBase() {
 
     @Comment("是否交易 0-休市 1-交易")
     @JsonProperty(value = "is_open")
-    var is_open : Int = -1  // -1 表示未定义
+    var is_open: Int = -1  // -1 表示未定义
 
     @Comment("上一个交易日")
     var pretrade_date = ""

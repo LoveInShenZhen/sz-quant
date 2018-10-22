@@ -21,21 +21,6 @@ open class RecordBase {
         values.forEachIndexed { index, value ->
             val propName = fields[index]
             val prop = propMap[propName]!!
-//            val propValue = if (value == null) {
-//                val propType = prop.returnType
-//                if (propType.isMarkedNullable) {
-//                    // 属性字段标记为可以为 null
-//                    value
-//                } else {
-//                    // 属性字段不能够为 null
-//                    when {
-//                        propType.isSubtypeOf(String::class.createType()) -> ""
-//                        else -> throw BizLogicException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value")
-//                    }
-//                }
-//            } else {
-//                value
-//            }
             val propValue = valueOfProp(prop, value)
             prop.setter.call(this, propValue)
         }
@@ -74,8 +59,25 @@ open class RecordBase {
                     ClassUtil.isTypeOf(String::class.java, propJavaClazz) -> value.toString()
                     ClassUtil.isTypeOf(Long::class.java, propJavaClazz) -> value.toString().toLongOrNull()
                     ClassUtil.isTypeOf(Int::class.java, propJavaClazz) -> value.toString().toIntOrNull()
-                    ClassUtil.isTypeOf(Double::class.java, propJavaClazz) -> value.toString().toDoubleOrNull()
-                    ClassUtil.isTypeOf(Float::class.java, propJavaClazz) -> value.toString().toFloatOrNull()
+
+                    ClassUtil.isTypeOf(Double::class.java, propJavaClazz) -> {
+                        val txtValue = value.toString()
+                        if (txtValue.isBlank() || txtValue.toLowerCase() in setOf("null", "nan")) {
+                            Double.NaN
+                        } else {
+                            txtValue.toDoubleOrNull()
+                        }
+                    }
+
+                    ClassUtil.isTypeOf(Float::class.java, propJavaClazz) -> {
+                        val txtValue = value.toString()
+                        if (txtValue.isBlank() || txtValue.toLowerCase() in setOf("null", "nan")) {
+                            Float.NaN
+                        } else {
+                            txtValue.toFloatOrNull()
+                        }
+                    }
+
                     ClassUtil.isTypeOf(Boolean::class.java, propJavaClazz) -> value.toString().toUpperCase() == "TRUE"
 
                     // 复杂类型
@@ -97,7 +99,7 @@ open class RecordBase {
                         return null
                     } else {
                         // 属性不允许为 null
-                        throw BizLogicException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value")
+                        throw BizLogicException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value: '$value'")
                     }
                 } else {
                     return convertedValue

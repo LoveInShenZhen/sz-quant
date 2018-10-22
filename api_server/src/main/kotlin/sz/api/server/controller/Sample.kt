@@ -7,6 +7,8 @@ import jodd.io.FileUtil
 import sz.api.server.controller.reply.HelloReply
 import sz.scaffold.annotations.Comment
 import sz.scaffold.controller.ApiController
+import sz.scaffold.controller.reply.ReplyBase
+import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
 import sz.tushare.record.TsRecord
 
@@ -41,6 +43,14 @@ class Sample : ApiController() {
 //        Logger.debug("prop type is match: ${ClassUtil.isTypeOf(BigDecimal::class.java, prop.returnType.jvmErasure.java)}")
 
         return reply
+    }
+
+    @Comment("临时测试")
+    fun test() : ReplyBase {
+        val f = "NaN".toFloat()
+
+        Logger.debug("Float.NaN: $f")
+        return ReplyBase()
     }
 
 }
