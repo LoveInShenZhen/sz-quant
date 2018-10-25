@@ -23,7 +23,7 @@ class ApiPayload {
     var token = ""
 
     // 接口参数，如daily接口中start_date和end_date
-    var params = mutableMapOf<String, String>()
+    var params = mutableMapOf<String, Any>()
 
     // 字段列表，用于接口获取指定的字段，以逗号分隔，如"open,high,low,close"
     var fields = ""
@@ -32,7 +32,7 @@ class ApiPayload {
         token = apiToken
     }
 
-    fun addParam(paramName: String, paramValue: String): ApiPayload {
+    fun addParam(paramName: String, paramValue: Any): ApiPayload {
         params.put(paramName, paramValue)
         return this
     }

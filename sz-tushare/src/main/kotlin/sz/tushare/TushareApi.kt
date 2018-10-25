@@ -330,8 +330,34 @@ object TushareApi {
         return dailyBasicAsync(ts_code, trade_date, start_date, end_date).get()
     }
 
+    /**
+     * 通用行情接口
+     * 更新时间：股票和指数通常在15点～17点之间，数字货币实时更新，具体请参考各接口文档明细。
+     * 描述：目前整合了股票（未复权、前复权、后复权）、指数、数字货币的行情数据，未来还将整合包括期货期权、基金、外汇在内的所有交易行情数据，同时提供分钟数据。
+     * 参考: https://tushare.pro/document/2?doc_id=109
+     *
+     * @param ts_code 证券代码
+     * @param pro_api pro版api对象
+     * @param start_date 开始日期 (格式：YYYYMMDD)
+     * @param end_date 结束日期 (格式：YYYYMMDD)
+     */
+    fun stockBarAsync(ts_code: String, pro_api: String = "", start_date: String = "", end_date: String = "", asset: String, adj: String, freq: String, ma: List<Int>) {
+        val api = ApiPayload()
+        api.api_name = "pro_bar"
+        api.addParam("ts_code", ts_code)
+                .addParam("pro_api", pro_api)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("asset", asset)
+                .addParam("adj", adj)
+                .addParam("freq", freq)
+                .addParam("ma", ma)
+
+    }
 
     //</editor-fold>
+
+    //<editor-fold desc="指数数据">
 
     /**
      * 获取指数基础信息(异步方式)
@@ -405,4 +431,49 @@ object TushareApi {
     fun indexDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<IndexDaily> {
         return indexDailyAsync(ts_code, trade_date, start_date, end_date).get()
     }
+
+    /**
+     * 获取各类指数成分和权重，月度数据 (异步方式)
+     * 指数公司网站公开数据
+     *
+     * 参考: https://tushare.pro/document/2?doc_id=96
+     *
+     * @param index_code 指数代码 (二选一)
+     * @param trade_date 交易日期 （二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     */
+    fun indexWeightAsync(index_code: String, trade_date: String, start_date: String = "", end_date: String = ""): CompletableFuture<List<IndexWeight>> {
+        val api = ApiPayload()
+        api.api_name = "index_weight"
+        api.addParam("index_code", index_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = IndexWeight().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<IndexWeight>(payload)
+        }
+    }
+
+
+    /**
+     * 获取各类指数成分和权重，月度数据
+     * 指数公司网站公开数据
+     *
+     * 参考: https://tushare.pro/document/2?doc_id=96
+     *
+     * @param index_code 指数代码 (二选一)
+     * @param trade_date 交易日期 （二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     */
+    fun indexWeight(index_code: String, trade_date: String, start_date: String = "", end_date: String = ""): List<IndexWeight> {
+        return indexWeightAsync(index_code, trade_date, start_date, end_date).get()
+    }
+
+    //</editor-fold>
 }
