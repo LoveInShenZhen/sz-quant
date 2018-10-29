@@ -15,3 +15,5 @@ GET     /api/builtin/sysInfo                                                sz.s
 # 测试接口
 GET     /api/v1/sample/hello                                                sz.api.server.controller.Sample.hello
 GET     /api/v1/sample/test                                                 sz.api.server.controller.Sample.test
+GET     /api/v1/sample/genCode                                              sz.api.server.controller.Sample.genCode
+GET     /api/v1/sample/genCode4                                             sz.api.server.controller.Sample.genCode4

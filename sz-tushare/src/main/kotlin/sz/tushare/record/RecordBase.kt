@@ -39,6 +39,8 @@ open class RecordBase {
                 when {
                     // 如果属性字段类型是字符串, 则返回空字符串
                     propType.isSubtypeOf(String::class.createType()) -> ""
+                    propType.isSubtypeOf(Double::class.createType()) -> Double.NaN
+                    propType.isSubtypeOf(Float::class.createType()) -> Float.NaN
                     // 其他类型, 但是又没有标记为允许为空, 则抛出异常
                     else -> throw BizLogicException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value")
                 }

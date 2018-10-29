@@ -1,6 +1,10 @@
 package sz.tushare
 
 import sz.scaffold.tools.json.Json
+import sz.scaffold.tools.json.toJsonNode
+import sz.scaffold.tools.json.toJsonPretty
+import sz.scaffold.tools.logger.AnsiColor
+import sz.scaffold.tools.logger.Logger
 import sz.tushare.record.*
 import java.util.concurrent.CompletableFuture
 
@@ -340,19 +344,25 @@ object TushareApi {
      * @param pro_api pro版api对象
      * @param start_date 开始日期 (格式：YYYYMMDD)
      * @param end_date 结束日期 (格式：YYYYMMDD)
+     * @param adj 复权类型(只针对股票)：None未复权 qfq前复权 hfq后复权 , 默认None
+     * @param freq 数据频度 ：1MIN表示1分钟（1/5/15/30/60分钟） D日线 ，默认D
+     * @param ma 均线，支持任意合理int数值
      */
-    fun stockBarAsync(ts_code: String, pro_api: String = "", start_date: String = "", end_date: String = "", asset: String, adj: String, freq: String, ma: List<Int>) {
+    fun stockBarAsync(ts_code: String, pro_api: String = "", start_date: String = "", end_date: String = "", adj: String, freq: String, ma: List<Int> = listOf()) {
         val api = ApiPayload()
         api.api_name = "pro_bar"
         api.addParam("ts_code", ts_code)
                 .addParam("pro_api", pro_api)
                 .addParam("start_date", start_date)
                 .addParam("end_date", end_date)
-                .addParam("asset", asset)
+                .addParam("asset", "E")     // 资产类别：E股票 I沪深指数 C数字货币 F期货 O期权，默认E
                 .addParam("adj", adj)
                 .addParam("freq", freq)
                 .addParam("ma", ma)
 
+        val result = api.send().toJsonNode().toJsonPretty()
+
+        Logger.debug(result, AnsiColor.GREEN)
     }
 
     //</editor-fold>
@@ -459,7 +469,6 @@ object TushareApi {
         }
     }
 
-
     /**
      * 获取各类指数成分和权重，月度数据
      * 指数公司网站公开数据
@@ -476,4 +485,504 @@ object TushareApi {
     }
 
     //</editor-fold>
+
+    //<editor-fold desc="财务数据">
+
+    /**
+     * 获取上市公司财务利润表数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=33
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期，比如20171231表示年报)
+     * @param report_type 报告类型： 参考下表说明
+     * @param comp_type 公司类型：1一般工商业 2银行 3保险 4证券
+     *
+     */
+    fun incomeAsync(ts_code: String,
+                    ann_date: String = "",
+                    start_date: String = "",
+                    end_date: String = "",
+                    period: String = "",
+                    report_type: String = "",
+                    comp_type: String = ""): CompletableFuture<List<Income>> {
+
+        val api = ApiPayload()
+        api.api_name = "income"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+                .addParam("report_type", report_type)
+                .addParam("comp_type", comp_type)
+
+        api.fields = Income().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Income>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司财务利润表数据
+     * 参考: https://tushare.pro/document/2?doc_id=33
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期，比如20171231表示年报)
+     * @param report_type 报告类型： 参考下表说明
+     * @param comp_type 公司类型：1一般工商业 2银行 3保险 4证券
+     *
+     */
+    fun income(ts_code: String,
+               ann_date: String = "",
+               start_date: String = "",
+               end_date: String = "",
+               period: String = "",
+               report_type: String = "",
+               comp_type: String = ""): List<Income> {
+        return incomeAsync(ts_code, ann_date, start_date, end_date, period, report_type, comp_type).get()
+    }
+
+    /**
+     * 获取上市公司资产负债表(异步方法)
+     * 参考: https://tushare.pro/document/2?doc_id=36
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期，比如20171231表示年报)
+     * @param report_type 报告类型：见下方详细说明
+     * @param comp_type 公司类型：1一般工商业 2银行 3保险 4证券
+     */
+    fun balanceSheetAsync(ts_code: String,
+                          ann_date: String,
+                          start_date: String,
+                          end_date: String,
+                          period: String,
+                          report_type: String,
+                          comp_type: String): CompletableFuture<List<BalanceSheet>> {
+
+        val api = ApiPayload()
+        api.api_name = "balancesheet"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+                .addParam("report_type", report_type)
+                .addParam("comp_type", comp_type)
+
+        api.fields = BalanceSheet().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<BalanceSheet>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司资产负债表
+     * 参考: https://tushare.pro/document/2?doc_id=36
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期，比如20171231表示年报)
+     * @param report_type 报告类型：见下方详细说明
+     * @param comp_type 公司类型：1一般工商业 2银行 3保险 4证券
+     */
+    fun balanceSheet(ts_code: String,
+                     ann_date: String,
+                     start_date: String,
+                     end_date: String,
+                     period: String,
+                     report_type: String,
+                     comp_type: String): List<BalanceSheet> {
+        return balanceSheetAsync(ts_code, ann_date, start_date, end_date, period, report_type, comp_type).get()
+    }
+
+    /**
+     * 获取上市公司现金流量表(异步方法)
+     * 参考: https://tushare.pro/document/2?doc_id=44
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期，比如20171231表示年报)
+     * @param report_type 报告类型：见下方详细说明
+     * @param comp_type 公司类型：1一般工商业 2银行 3保险 4证券
+     */
+    fun cashflowAsync(ts_code: String,
+                      ann_date: String,
+                      start_date: String,
+                      end_date: String,
+                      period: String,
+                      report_type: String,
+                      comp_type: String): CompletableFuture<List<Cashflow>> {
+
+        val api = ApiPayload()
+        api.api_name = "cashflow"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+                .addParam("report_type", report_type)
+                .addParam("comp_type", comp_type)
+
+        api.fields = BalanceSheet().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Cashflow>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司现金流量表
+     * 参考: https://tushare.pro/document/2?doc_id=44
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期，比如20171231表示年报)
+     * @param report_type 报告类型：见下方详细说明
+     * @param comp_type 公司类型：1一般工商业 2银行 3保险 4证券
+     */
+    fun cashflow(ts_code: String,
+                 ann_date: String,
+                 start_date: String,
+                 end_date: String,
+                 period: String,
+                 report_type: String,
+                 comp_type: String): List<Cashflow> {
+        return cashflowAsync(ts_code, ann_date, start_date, end_date, period, report_type, comp_type).get()
+    }
+
+    /**
+     * 获取业绩预告数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=45
+     *
+     * @param ts_code 股票代码(二选一)
+     * @param ann_date 公告日期
+     * @param start_date 公告开始日期
+     * @param end_date 公告结束日期
+     * @param period 报告期 (二选一) (每个季度最后一天的日期，比如20171231表示年报)
+     * @param type 预告类型(预增/预减/扭亏/首亏/续亏/续盈/略增/略减)
+     */
+    fun forecastAsync(ts_code: String = "",
+                      ann_date: String = "",
+                      start_date: String = "",
+                      end_date: String = "",
+                      period: String = "",
+                      type: String = ""): CompletableFuture<List<Forecast>> {
+
+        val api = ApiPayload()
+        api.api_name = "forecast"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+                .addParam("type", type)
+
+        api.fields = Forecast().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Forecast>(payload)
+        }
+    }
+
+    /**
+     * 获取业绩预告数据
+     * 参考: https://tushare.pro/document/2?doc_id=45
+     *
+     * @param ts_code 股票代码(二选一)
+     * @param ann_date 公告日期
+     * @param start_date 公告开始日期
+     * @param end_date 公告结束日期
+     * @param period 报告期 (二选一) (每个季度最后一天的日期，比如20171231表示年报)
+     * @param type 预告类型(预增/预减/扭亏/首亏/续亏/续盈/略增/略减)
+     */
+    fun forecast(ts_code: String = "",
+                 ann_date: String = "",
+                 start_date: String = "",
+                 end_date: String = "",
+                 period: String = "",
+                 type: String = ""): List<Forecast> {
+
+        return forecastAsync(ts_code, ann_date, start_date, end_date, period, type).get()
+    }
+
+    /**
+     * 获取上市公司业绩快报(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=46
+     *
+     * @param ts_code 股票代码(二选一)
+     * @param ann_date 公告日期 (二选一)
+     * @param start_date 公告开始日期
+     * @param end_date 公告结束日期
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     */
+    fun expressAsync(ts_code: String = "",
+                     ann_date: String = "",
+                     start_date: String = "",
+                     end_date: String = "",
+                     period: String = ""): CompletableFuture<List<Express>> {
+
+        val api = ApiPayload()
+        api.api_name = "express"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+
+        api.fields = Express().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Express>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司业绩快报
+     * 参考: https://tushare.pro/document/2?doc_id=46
+     *
+     * @param ts_code 股票代码(二选一)
+     * @param ann_date 公告日期 (二选一)
+     * @param start_date 公告开始日期
+     * @param end_date 公告结束日期
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     */
+    fun express(ts_code: String = "",
+                ann_date: String = "",
+                start_date: String = "",
+                end_date: String = "",
+                period: String = ""): List<Express> {
+
+        return expressAsync(ts_code, ann_date, start_date, end_date, period).get()
+    }
+
+    /**
+     * 分红送股数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=103
+     *
+     * @param ts_code TS代码
+     * @param ann_date 公告日
+     * @param record_date 股权登记日期
+     * @param ex_date 除权除息日
+     */
+    fun dividendAsync(ts_code: String = "",
+                      ann_date: String = "",
+                      record_date: String = "",
+                      ex_date: String = ""): CompletableFuture<List<Dividend>> {
+
+        val api = ApiPayload()
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("record_date", record_date)
+                .addParam("ex_date", ex_date)
+
+        api.fields = Dividend().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Dividend>(payload)
+        }
+    }
+
+    /**
+     * 分红送股数据
+     * 参考: https://tushare.pro/document/2?doc_id=103
+     *
+     * @param ts_code TS代码
+     * @param ann_date 公告日
+     * @param record_date 股权登记日期
+     * @param ex_date 除权除息日
+     */
+    fun dividend(ts_code: String = "",
+                 ann_date: String = "",
+                 record_date: String = "",
+                 ex_date: String = ""): List<Dividend> {
+
+        return dividendAsync(ts_code, ann_date, record_date, ex_date).get()
+    }
+
+    /**
+     * 获取上市公司财务指标数据，为避免服务器压力，先阶段每次请求最多返回30条记录，可通过设置日期多次请求获取更多数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=79
+     *
+     * @param ts_code TS股票代码,e.g. 600001.SH/000001.SZ
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     */
+    fun finaIndicatorAsync(ts_code: String,
+                           ann_date: String = "",
+                           start_date: String = "",
+                           end_date: String = "",
+                           period: String = ""): CompletableFuture<List<FinaIndicator>> {
+
+        val api = ApiPayload()
+        api.api_name = "fina_indicator"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+
+        api.fields = FinaIndicator().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FinaIndicator>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司财务指标数据，为避免服务器压力，先阶段每次请求最多返回30条记录，可通过设置日期多次请求获取更多数据
+     * 参考: https://tushare.pro/document/2?doc_id=79
+     *
+     * @param ts_code TS股票代码,e.g. 600001.SH/000001.SZ
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     */
+    fun finaIndicator(ts_code: String,
+                      ann_date: String = "",
+                      start_date: String = "",
+                      end_date: String = "",
+                      period: String = ""): List<FinaIndicator> {
+
+        return finaIndicatorAsync(ts_code, ann_date, start_date, end_date, period).get()
+    }
+
+    /**
+     * 获取上市公司定期财务审计意见数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=80
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 公告开始日期
+     * @param end_date 公告结束日期
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     */
+    fun finaAuditAsync(ts_code: String,
+                       ann_date: String = "",
+                       start_date: String = "",
+                       end_date: String = "",
+                       period: String = ""): CompletableFuture<List<FinaAudit>> {
+
+        val api = ApiPayload()
+        api.api_name = "fina_audit"
+        api.addParam("ts_code", ts_code)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("period", period)
+
+        api.fields = FinaAudit().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FinaAudit>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司定期财务审计意见数据
+     * 参考: https://tushare.pro/document/2?doc_id=80
+     *
+     * @param ts_code 股票代码
+     * @param ann_date 公告日期
+     * @param start_date 公告开始日期
+     * @param end_date 公告结束日期
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     */
+    fun finaAudit(ts_code: String,
+                  ann_date: String = "",
+                  start_date: String = "",
+                  end_date: String = "",
+                  period: String = ""): List<FinaAudit> {
+
+        return finaAuditAsync(ts_code, ann_date, start_date, end_date, period).get()
+    }
+
+    /**
+     * 获得上市公司主营业务构成，分地区和产品两种方式(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=81
+     *
+     * @param ts_code 股票代码
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     * @param type 类型：P按产品 D按地区（请输入大写字母P或者D）
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     */
+    fun finaMainbzAsync(ts_code: String,
+                        period: String = "",
+                        type: String = "",
+                        start_date: String = "",
+                        end_date: String = ""): CompletableFuture<List<FinaMainbz>> {
+
+        val api = ApiPayload()
+        api.addParam("ts_code", ts_code)
+                .addParam("period", period)
+                .addParam("type", type)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = FinaMainbz().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FinaMainbz>(payload)
+        }
+    }
+
+    /**
+     * 获得上市公司主营业务构成，分地区和产品两种方式
+     * 参考: https://tushare.pro/document/2?doc_id=81
+     *
+     * @param ts_code 股票代码
+     * @param period 报告期(每个季度最后一天的日期,比如20171231表示年报)
+     * @param type 类型：P按产品 D按地区（请输入大写字母P或者D）
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     */
+    fun finaMainbz(ts_code: String,
+                   period: String = "",
+                   type: String = "",
+                   start_date: String = "",
+                   end_date: String = ""): List<FinaMainbz> {
+
+        return finaMainbzAsync(ts_code, period, type, start_date, end_date).get()
+    }
+    //</editor-fold>
+
+
 }

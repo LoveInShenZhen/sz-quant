@@ -11,6 +11,8 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-codec/commons-codec
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
 
+    compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
+
     compile project(':common_lib')
     compile project(':models')
     compile project(':sz-tushare')
