@@ -797,6 +797,7 @@ object TushareApi {
                       ex_date: String = ""): CompletableFuture<List<Dividend>> {
 
         val api = ApiPayload()
+        api.api_name = "dividend"
         api.addParam("ts_code", ts_code)
                 .addParam("ann_date", ann_date)
                 .addParam("record_date", record_date)
@@ -949,6 +950,7 @@ object TushareApi {
                         end_date: String = ""): CompletableFuture<List<FinaMainbz>> {
 
         val api = ApiPayload()
+        api.api_name = "fina_mainbz"
         api.addParam("ts_code", ts_code)
                 .addParam("period", period)
                 .addParam("type", type)
@@ -982,6 +984,505 @@ object TushareApi {
 
         return finaMainbzAsync(ts_code, period, type, start_date, end_date).get()
     }
+    //</editor-fold>
+
+    //<editor-fold desc="市场参考数据">
+
+    /**
+     * 获取沪股通、深股通、港股通每日资金流向数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=47
+     *
+     * @param trade_date 交易日期 (二选一)
+     * @param start_date 开始日期 (二选一)
+     * @param end_date 结束日期
+     */
+    fun moneyflowHsgtAsync(trade_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<MoneyflowHsgt>> {
+
+        val api = ApiPayload()
+        api.api_name = "moneyflow_hsgt"
+        api.addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = MoneyflowHsgt().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<MoneyflowHsgt>(payload)
+        }
+    }
+
+    /**
+     * 获取沪股通、深股通、港股通每日资金流向数据
+     * 参考: https://tushare.pro/document/2?doc_id=47
+     *
+     * @param trade_date 交易日期 (二选一)
+     * @param start_date 开始日期 (二选一)
+     * @param end_date 结束日期
+     */
+    fun moneyflowHsgt(trade_date: String = "", start_date: String = "", end_date: String = ""): List<MoneyflowHsgt> {
+        return moneyflowHsgtAsync(trade_date, start_date, end_date).get()
+    }
+
+    /**
+     * 获取沪股通、深股通每日前十大成交详细数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=48
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     * @param market_type 市场类型（1：沪市 3：深市）
+     */
+    fun hsgtTop10Async(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = "", market_type: String = ""): CompletableFuture<List<HsgtTop10>> {
+
+        val api = ApiPayload()
+        api.api_name = "hsgt_top10"
+        api.addParam("ts_code", ts_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("market_type", market_type)
+
+        api.fields = HsgtTop10().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<HsgtTop10>(payload)
+        }
+    }
+
+    /**
+     * 获取沪股通、深股通每日前十大成交详细数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=48
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     * @param market_type 市场类型（1：沪市 3：深市）
+     */
+    fun hsgtTop10(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = "", market_type: String = ""): List<HsgtTop10> {
+        return hsgtTop10Async(ts_code, trade_date, start_date, end_date, market_type).get()
+    }
+
+    /**
+     * 获取港股通每日成交数据，其中包括沪市、深市详细数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=49
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     * @param market_type 市场类型 2：港股通（沪） 4：港股通（深）
+     */
+    fun ggtTop10Async(ts_code: String = "",
+                      trade_date: String = "",
+                      start_date: String = "",
+                      end_date: String = "",
+                      market_type: String = ""): CompletableFuture<List<GgtTop10>> {
+
+        val api = ApiPayload()
+        api.api_name = "ggt_top10"
+        api.addParam("ts_code", ts_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+                .addParam("market_type", market_type)
+
+        api.fields = GgtTop10().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<GgtTop10>(payload)
+        }
+    }
+
+    /**
+     * 获取港股通每日成交数据，其中包括沪市、深市详细数据
+     * 参考: https://tushare.pro/document/2?doc_id=49
+     *
+     * @param ts_code 股票代码（二选一）
+     * @param trade_date 交易日期（二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     * @param market_type 市场类型 2：港股通（沪） 4：港股通（深）
+     */
+    fun ggtTop10(ts_code: String = "",
+                 trade_date: String = "",
+                 start_date: String = "",
+                 end_date: String = "",
+                 market_type: String = ""): List<GgtTop10> {
+
+        return ggtTop10Async(ts_code, trade_date, start_date, end_date, market_type).get()
+    }
+
+    /**
+     * 获取融资融券每日交易汇总数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=58
+     *
+     * @param trade_date 交易日期
+     * @param exchange_id 交易所代码
+     */
+    fun marginAsync(trade_date: String, exchange_id: String = ""): CompletableFuture<List<Margin>> {
+        val api = ApiPayload()
+        api.api_name = "margin"
+        api.addParam("trade_date", trade_date).addParam("exchange_id", exchange_id)
+
+        api.fields = Margin().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Margin>(payload)
+        }
+    }
+
+    /**
+     * 获取融资融券每日交易汇总数据
+     * 参考: https://tushare.pro/document/2?doc_id=58
+     *
+     * @param trade_date 交易日期
+     * @param exchange_id 交易所代码
+     */
+    fun margin(trade_date: String, exchange_id: String = ""): List<Margin> {
+        return marginAsync(trade_date, exchange_id).get()
+    }
+
+    /**
+     * 获取沪深两市每日融资融券明细(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=59
+     *
+     * @param trade_date
+     * @param ts_code
+     */
+    fun marginDetailAsync(trade_date: String, ts_code: String = ""): CompletableFuture<List<MarginDetail>> {
+
+        val api = ApiPayload()
+        api.api_name = "margin_detail"
+        api.addParam("trade_date", trade_date).addParam("ts_code", ts_code)
+
+        api.fields = MarginDetail().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<MarginDetail>(payload)
+        }
+    }
+
+    /**
+     * 获取沪深两市每日融资融券明细
+     * 参考: https://tushare.pro/document/2?doc_id=59
+     *
+     * @param trade_date
+     * @param ts_code
+     */
+    fun marginDetail(trade_date: String, ts_code: String = ""): List<MarginDetail> {
+        return marginDetailAsync(trade_date, ts_code).get()
+    }
+
+    /**
+     * 获取上市公司前十大股东数据，包括持有数量和比例等信息
+     * 参考: https://tushare.pro/document/2?doc_id=61
+     *
+     * @param ts_code TS代码
+     * @param period 报告期
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     */
+    fun top10HoldersAsync(ts_code: String, period: String = "", ann_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<Top10Holders>> {
+
+        val api = ApiPayload()
+        api.api_name = "top10_holders"
+        api.addParam("ts_code", ts_code)
+                .addParam("period", period)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = Top10Holders().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Top10Holders>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司前十大股东数据，包括持有数量和比例等信息
+     * 参考: https://tushare.pro/document/2?doc_id=61
+     *
+     * @param ts_code TS代码
+     * @param period 报告期
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     */
+    fun top10Holders(ts_code: String, period: String = "", ann_date: String = "", start_date: String = "", end_date: String = ""): List<Top10Holders> {
+        return top10HoldersAsync(ts_code, period, ann_date, start_date, end_date).get()
+    }
+
+    /**
+     * 获取上市公司前十大流通股东数据。(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=62
+     *
+     * @param ts_code TS代码
+     * @param period 报告期
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     */
+    fun top10FloatHoldersAsync(ts_code: String, period: String = "", ann_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<Top10FloatHolders>> {
+        val api = ApiPayload()
+        api.api_name = "top10_floatholders"
+        api.addParam("ts_code", ts_code)
+                .addParam("period", period)
+                .addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = Top10FloatHolders().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Top10FloatHolders>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司前十大流通股东数据。
+     * 参考: https://tushare.pro/document/2?doc_id=62
+     *
+     * @param ts_code TS代码
+     * @param period 报告期
+     * @param ann_date 公告日期
+     * @param start_date 报告期开始日期
+     * @param end_date 报告期结束日期
+     */
+    fun top10FloatHolders(ts_code: String, period: String = "", ann_date: String = "", start_date: String = "", end_date: String = ""): List<Top10FloatHolders> {
+        return top10FloatHoldersAsync(ts_code, period, ann_date, start_date, end_date).get()
+    }
+
+    /**
+     * 龙虎榜每日交易明细, 单次最大10000 (异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=106
+     *
+     * @param trade_date 交易日期
+     * @param ts_code 股票代码
+     */
+    fun topListAsync(trade_date: String, ts_code: String = ""): CompletableFuture<List<TopList>> {
+        val api = ApiPayload()
+        api.api_name = "top_list"
+        api.addParam("trade_date", trade_date).addParam("ts_code", ts_code)
+
+        api.fields = TopList().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<TopList>(payload)
+        }
+    }
+
+    /**
+     * 龙虎榜每日交易明细, 单次最大10000
+     * 参考: https://tushare.pro/document/2?doc_id=106
+     *
+     * @param trade_date 交易日期
+     * @param ts_code 股票代码
+     */
+    fun topList(trade_date: String, ts_code: String = ""): List<TopList> {
+        return topListAsync(trade_date, ts_code).get()
+    }
+
+    /**
+     * 龙虎榜机构成交明细(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=107
+     *
+     * @param trade_date 交易日期
+     * @param ts_code TS代码
+     */
+    fun topInstAsync(trade_date: String, ts_code: String = ""): CompletableFuture<List<TopInst>> {
+        val api = ApiPayload()
+        api.api_name = "top_inst"
+        api.addParam("trade_date", trade_date)
+                .addParam("ts_code", ts_code)
+
+        api.fields = TopInst().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<TopInst>(payload)
+        }
+    }
+
+    /**
+     * 龙虎榜机构成交明细
+     * 参考: https://tushare.pro/document/2?doc_id=107
+     *
+     * @param trade_date 交易日期
+     * @param ts_code TS代码
+     */
+    fun topInst(trade_date: String, ts_code: String = ""): List<TopInst> {
+        return topInstAsync(trade_date, ts_code).get()
+    }
+
+    /**
+     * 股权质押统计数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=110
+     *
+     * @param ts_code 股票代码
+     */
+    fun pledgeStatAsync(ts_code: String): CompletableFuture<List<PledgeStat>> {
+        val api = ApiPayload()
+        api.api_name = "pledge_stat"
+        api.addParam("ts_code", ts_code)
+        api.fields = PledgeStat().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<PledgeStat>(payload)
+        }
+    }
+
+    /**
+     * 股权质押统计数据
+     * 参考: https://tushare.pro/document/2?doc_id=110
+     *
+     * @param ts_code 股票代码
+     */
+    fun pledgeStat(ts_code: String): List<PledgeStat> {
+        return pledgeStatAsync(ts_code).get()
+    }
+
+    /**
+     * 获取股权质押明细数据, 限量：单次最大1000 (异步方式)
+     *
+     * @param ts_code 股票代码
+     */
+    fun pledgeDetailAsync(ts_code: String): CompletableFuture<List<PledgeDetail>> {
+        val api = ApiPayload()
+        api.api_name = "pledge_detail"
+        api.addParam("ts_code", ts_code)
+        api.fields = PledgeDetail().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<PledgeDetail>(payload)
+        }
+    }
+
+    /**
+     * 获取股权质押明细数据, 限量：单次最大1000 (异步方式)
+     *
+     * @param ts_code 股票代码
+     */
+    fun pledgeDetail(ts_code: String): List<PledgeDetail> {
+        return pledgeDetailAsync(ts_code).get()
+    }
+
+    /**
+     * 获取上市公司回购股票数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=124
+     *
+     * @param ann_date
+     * @param start_date
+     * @param end_date
+     */
+    fun repurchaseAsync(ann_date: String, start_date: String, end_date: String): CompletableFuture<List<Repurchase>> {
+        val api = ApiPayload()
+        api.api_name = "repurchase"
+        api.addParam("ann_date", ann_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+
+        api.fields = Repurchase().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Repurchase>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司回购股票数据
+     * 参考: https://tushare.pro/document/2?doc_id=124
+     *
+     * @param ann_date
+     * @param start_date
+     * @param end_date
+     */
+    fun repurchase(ann_date: String, start_date: String, end_date: String): List<Repurchase> {
+        return repurchaseAsync(ann_date, start_date, end_date).get()
+    }
+
+    /**
+     * 获取概念股分类，目前只有ts一个来源，未来将逐步增加来源
+     *
+     * @param src 来源，默认为ts
+     */
+    fun conceptAsync(src: String = "ts"): CompletableFuture<List<Concept>> {
+        val api = ApiPayload()
+        api.api_name = "concept"
+        api.addParam("src", src)
+        api.fields = Concept().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<Concept>(payload)
+        }
+    }
+
+    /**
+     * 获取概念股分类，目前只有ts一个来源，未来将逐步增加来源(异步方式)
+     *
+     * @param src 来源，默认为ts
+     */
+    fun concept(src: String = "ts"): List<Concept> {
+        return conceptAsync(src).get()
+    }
+
+    /**
+     * 获取概念股分类明细数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=126
+     *
+     * @param id 概念分类ID （id来自概念股分类接口）
+     */
+    fun conceptDetailAsync(id: String): CompletableFuture<List<ConceptDetail>> {
+        val api = ApiPayload()
+        api.api_name = "concept_detail"
+        api.addParam("id", id)
+        api.fields = ConceptDetail().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<ConceptDetail>(payload)
+        }
+    }
+
+    /**
+     * 获取概念股分类明细数据
+     * 参考: https://tushare.pro/document/2?doc_id=126
+     *
+     * @param id 概念分类ID （id来自概念股分类接口）
+     */
+    fun conceptDetail(id: String): List<ConceptDetail> {
+        return conceptDetailAsync(id).get()
+    }
+
     //</editor-fold>
 
 

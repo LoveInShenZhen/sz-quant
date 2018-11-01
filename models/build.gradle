@@ -7,12 +7,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath "io.ebean:ebean-gradle-plugin:11.10.1"
+        classpath "io.ebean:ebean-gradle-plugin:11.11.1"
     }
 }
 
 apply plugin: 'io.ebean'
-apply plugin: 'kotlin-kapt'
 
 dependencies {
     kapt "io.ebean:kotlin-querybean-generator:11.4.1"
@@ -22,11 +21,5 @@ dependencies {
 
 ebean {
     debugLevel = 2
-    queryBeans = true
-    kotlin = true
-    generatorVersion = "11.4.1"
-}
-
-sourceSets {
-    main.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/main")]
+    queryBeans = false
 }
