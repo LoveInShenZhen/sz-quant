@@ -97,11 +97,17 @@ net_buy	float	Y	净成交额（万）"""
     }
 
     fun genCode4() : String {
-        val txt = """id	str	Y	概念代码
-ts_code	str	Y	股票代码
-name	str	Y	股票名称
-in_date	str	N	纳入日期
-out_date	str	N	剔除日期"""
+        val txt = """ts_code	str	Y	TS代码
+trade_date	str	Y	交易日期
+open	float	Y	开盘价(元)
+high	float	Y	最高价(元)
+low	float	Y	最低价(元)
+close	float	Y	收盘价(元)
+pre_close	float	Y	昨收盘价(元)
+change	float	Y	涨跌额(元)
+pct_change	float	Y	涨跌幅(%)
+vol	float	Y	成交量(手)
+amount	float	Y	成交额(千元)"""
 
         val tmplateTxt = """|    @Comment("{{comment}}")
                             |    var {{fieldName}}: {{fieldType}} = {{fieldInitValue}}

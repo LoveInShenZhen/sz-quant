@@ -1485,5 +1485,197 @@ object TushareApi {
 
     //</editor-fold>
 
+    //<editor-fold desc="基金">
+
+    /**
+     * 获取公募基金数据列表，包括场内和场外基金(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=19
+     *
+     * @param market 交易市场: E场内 O场外（默认E）
+     */
+    fun fundBasicAsync(market: String = "E"): CompletableFuture<List<FundBasic>> {
+        val api = ApiPayload()
+        api.api_name = "fund_basic"
+        api.addParam("market", market)
+        api.fields = FundBasic().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FundBasic>(payload)
+        }
+    }
+
+    /**
+     * 获取公募基金数据列表，包括场内和场外基金
+     * 参考: https://tushare.pro/document/2?doc_id=19
+     *
+     * @param market 交易市场: E场内 O场外（默认E）
+     */
+    fun fundBasic(market: String = "E"): List<FundBasic> {
+        return fundBasicAsync(market).get()
+    }
+
+    /**
+     * 获取公募基金管理人列表
+     * 参考: https://tushare.pro/document/2?doc_id=118
+     */
+    fun fundCompanyAsync(): CompletableFuture<List<FundCompany>> {
+        val api = ApiPayload()
+        api.api_name = "fund_company"
+        api.fields = FundCompany().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FundCompany>(payload)
+        }
+    }
+
+    /**
+     * 获取公募基金管理人列表
+     * 参考: https://tushare.pro/document/2?doc_id=118
+     */
+    fun fundCompany(): List<FundCompany> {
+        return fundCompanyAsync().get()
+    }
+
+    /**
+     * 获取公募基金净值数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=119
+     *
+     * @param ts_code TS基金代码 （二选一）
+     * @param end_date 净值日期 （二选一）
+     */
+    fun fundNavAsync(ts_code: String = "", end_date: String = ""): CompletableFuture<List<FundNav>> {
+        val api = ApiPayload()
+        api.api_name = "fund_nav"
+        api.addParam("ts_code", ts_code).addParam("end_date", end_date)
+        api.fields = FundNav().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FundNav>(payload)
+        }
+    }
+
+    /**
+     * 获取公募基金净值数据
+     * 参考: https://tushare.pro/document/2?doc_id=119
+     *
+     * @param ts_code TS基金代码 （二选一）
+     * @param end_date 净值日期 （二选一）
+     */
+    fun fundNav(ts_code: String = "", end_date: String = ""): List<FundNav> {
+        return fundNavAsync(ts_code, end_date).get()
+    }
+
+    /**
+     * 获取公募基金分红数据(异步方式)
+     * 参考: https://tushare.pro/document/2?doc_id=120
+     * @param ann_date 公告日期（以下参数四选一）
+     * @param ex_date 除息日（以下参数四选一）
+     * @param pay_date 派息日（以下参数四选一）
+     * @param ts_code TS代码（以下参数四选一）
+     */
+    fun fundDivAsync(ann_date: String = "", ex_date: String = "", pay_date: String = "", ts_code: String = ""): CompletableFuture<List<FundDiv>> {
+        val api = ApiPayload()
+        api.api_name = "fund_div"
+        api.addParam("ann_date", ann_date)
+                .addParam("ex_date", ex_date)
+                .addParam("pay_date", pay_date)
+                .addParam("ts_code", ts_code)
+
+        api.fields = FundDiv().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FundDiv>(payload)
+        }
+    }
+
+    /**
+     * 获取公募基金分红数据
+     * 参考: https://tushare.pro/document/2?doc_id=120
+     * @param ann_date 公告日期（以下参数四选一）
+     * @param ex_date 除息日（以下参数四选一）
+     * @param pay_date 派息日（以下参数四选一）
+     * @param ts_code TS代码（以下参数四选一）
+     */
+    fun fundDiv(ann_date: String = "", ex_date: String = "", pay_date: String = "", ts_code: String = ""): List<FundDiv> {
+        return fundDivAsync(ann_date, ex_date, pay_date, ts_code).get()
+    }
+
+    /**
+     * 获取公募基金持仓数据，季度更新(异步方式)
+     *
+     * @param ts_code TS基金代码
+     */
+    fun fundPortfolioAsync(ts_code: String): CompletableFuture<List<FundPortfolio>> {
+        val api = ApiPayload()
+        api.api_name = "fund_portfolio"
+        api.addParam("ts_code", ts_code)
+        api.fields = FundPortfolio().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FundPortfolio>(payload)
+        }
+    }
+
+    /**
+     * 获取公募基金持仓数据，季度更新
+     *
+     * @param ts_code TS基金代码
+     */
+    fun fundPortfolio(ts_code: String): List<FundPortfolio> {
+        return fundPortfolioAsync(ts_code).get()
+    }
+
+    /**
+     * 获取场内基金日线行情，类似股票日行情(异步方式
+     * 更新：每日收盘后2小时内
+     * 参考: https://tushare.pro/document/2?doc_id=127
+     *
+     * @param ts_code 基金代码（二选一）
+     * @param trade_date 交易日期（二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     */
+    fun fundDailyAsync(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<FundDaily>> {
+        val api = ApiPayload()
+        api.api_name = "fund_daily"
+        api.addParam("ts_code", ts_code)
+                .addParam("trade_date", trade_date)
+                .addParam("start_date", start_date)
+                .addParam("end_date", end_date)
+        api.fields = FundDaily().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            Logger.debug("\n$resultBody")
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<FundDaily>(payload)
+        }
+    }
+
+    /**
+     * 获取场内基金日线行情，类似股票日行情
+     * 更新：每日收盘后2小时内
+     * 参考: https://tushare.pro/document/2?doc_id=127
+     *
+     * @param ts_code 基金代码（二选一）
+     * @param trade_date 交易日期（二选一）
+     * @param start_date 开始日期
+     * @param end_date 结束日期
+     */
+    fun fundDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<FundDaily> {
+        return fundDailyAsync(ts_code, trade_date, start_date, end_date).get()
+    }
+
+    //</editor-fold>
+
 
 }
