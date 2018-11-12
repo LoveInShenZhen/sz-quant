@@ -1671,7 +1671,7 @@ object TushareApi {
      * @param start_date 开始日期
      * @param end_date 结束日期
      */
-    fun fundDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<FundDaily> {
+    fun fundDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<FundDaily>   {
         return fundDailyAsync(ts_code, trade_date, start_date, end_date).get()
     }
 

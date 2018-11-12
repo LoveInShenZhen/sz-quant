@@ -1,5 +1,8 @@
 package sz.api.server.controller
 
+import com.google.common.base.CaseFormat
+import io.vertx.core.buffer.Buffer
+import io.vertx.core.net.NetClientOptions
 import jodd.datetime.JDateTime
 import jodd.datetime.ext.firstDayOfYear
 import jodd.datetime.ext.lastDayOfYear
@@ -7,6 +10,11 @@ import jodd.io.FileUtil
 import org.jtwig.JtwigModel
 import org.jtwig.JtwigTemplate
 import sz.api.server.controller.reply.HelloReply
+import sz.futu.client.FutuClient
+import sz.futu.protocol.FutuMessage
+import sz.futu.protocol.QotCommon
+import sz.futu.protocol.QotGetHistoryKL
+import sz.scaffold.Application
 import sz.scaffold.annotations.Comment
 import sz.scaffold.controller.ApiController
 import sz.scaffold.controller.reply.ReplyBase
@@ -16,6 +24,7 @@ import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
 import sz.tushare.TushareExecutor
 import sz.tushare.record.TsRecord
+import java.io.File
 
 //
 // Created by kk on 2017/12/13.
@@ -42,10 +51,6 @@ class Sample : ApiController() {
         FileUtil.mkdirs(dataDir)
 
         TsRecord.saveToFile("$dataDir/${JDateTime().toString("YYYY_MM_DD-hh_mm_ss")}.csv", records)
-
-//        val prop = Daily::class.memberProperties.first { it.name == "open" }
-//        Logger.debug("prop.returnType: ${prop.returnType}")
-//        Logger.debug("prop type is match: ${ClassUtil.isTypeOf(BigDecimal::class.java, prop.returnType.jvmErasure.java)}")
 
         return reply
     }
@@ -96,7 +101,7 @@ net_buy	float	Y	净成交额（万）"""
         }.joinToString("\n")
     }
 
-    fun genCode4() : String {
+    fun genCode4(): String {
         val txt = """ts_code	str	Y	TS代码
 trade_date	str	Y	交易日期
 open	float	Y	开盘价(元)
@@ -129,6 +134,173 @@ amount	float	Y	成交额(千元)"""
 
             template.render(model)
         }.joinToString("\n")
+    }
+
+    fun genParserMapCode(): String {
+        val txt = """1001	InitConnect.proto	初始化连接
+1002	GetGlobalState.proto	获取全局状态
+1003	Notify.proto	系统通知推送
+1004	KeepAlive.proto	保活心跳
+2001	Trd_GetAccList.proto	获取业务账户列表
+2005	Trd_UnlockTrade.proto	解锁或锁定交易
+2008	Trd_SubAccPush.proto	订阅业务账户的交易推送数据
+2101	Trd_GetFunds.proto	获取账户资金
+2102	Trd_GetPositionList.proto	获取账户持仓
+2111	Trd_GetMaxTrdQtys.proto	获取最大交易数量
+2201	Trd_GetOrderList.proto	获取订单列表
+2202	Trd_PlaceOrder.proto	下单
+2205	Trd_ModifyOrder.proto	修改订单
+2208	Trd_UpdateOrder.proto	推送订单状态变动通知
+2211	Trd_GetOrderFillList.proto	获取成交列表
+2218	Trd_UpdateOrderFill.proto	推送成交通知
+2221	Trd_GetHistoryOrderList.proto	获取历史订单列表
+2222	Trd_GetHistoryOrderFillList.proto	获取历史成交列表
+3001	Qot_Sub.proto	订阅或者反订阅
+3002	Qot_RegQotPush.proto	注册推送
+3003	Qot_GetSubInfo.proto	获取订阅信息
+3004	Qot_GetBasicQot.proto	获取股票基本行情
+3005	Qot_UpdateBasicQot.proto	推送股票基本行情
+3006	Qot_GetKL.proto	获取K线
+3007	Qot_UpdateKL.proto	推送K线
+3008	Qot_GetRT.proto	获取分时
+3009	Qot_UpdateRT.proto	推送分时
+3010	Qot_GetTicker.proto	获取逐笔
+3011	Qot_UpdateTicker.proto	推送逐笔
+3012	Qot_GetOrderBook.proto	获取买卖盘
+3013	Qot_UpdateOrderBook.proto	推送买卖盘
+3014	Qot_GetBroker.proto	获取经纪队列
+3015	Qot_UpdateBroker.proto	推送经纪队列
+3016	Qot_GetOrderDetail.proto	获取委托明细
+3017	Qot_UpdateOrderDetail.proto	推送委托明细
+3100	Qot_GetHistoryKL.proto	获取单只股票一段历史K线
+3101	Qot_GetHistoryKLPoints.proto	获取多只股票多点历史K线
+3102	Qot_GetRehab.proto	获取复权信息
+3103	Qot_RequestHistoryKL.proto	 获取单只股票一段历史K线
+3200	Qot_GetTradeDate.proto	获取市场交易日
+3202	Qot_GetStaticInfo.proto	获取股票静态信息
+3203	Qot_GetSecuritySnapshot.proto	获取股票快照
+3204	Qot_GetPlateSet.proto	获取板块集合下的板块
+3205	Qot_GetPlateSecurity.proto	获取板块下的股票
+3206	Qot_GetReference.proto	获取正股相关股票
+3207	Qot_GetOwnerPlate.proto	获取股票所属板块
+3208	Qot_GetHoldingChangeList.proto	获取持股变化列表
+3209	Qot_GetOptionChain.proto	获取期权链"""
+
+        val tmplateTxt = "\t{{protoId}} -> {{type}}.Response.parser()\t\t//{{comments}}\n"
+        val template = JtwigTemplate.inlineTemplate(tmplateTxt)
+
+        val sb = StringBuilder()
+        sb.appendln("    fun responseParserById(protoId: Int): Parser<*> {\n" +
+                "        return when (protoId) {")
+
+        sb.append(txt.split("\n").map { line ->
+            val parts = line.trim().split("""\s""".toRegex(), 3)
+            val model = JtwigModel.newModel()
+            model.with("protoId", parts[0])
+            model.with("type", parts[1].replace(".proto", "").replace("_", ""))
+            if (parts.size >= 3) {
+                model.with("comments", parts[2])
+            } else {
+                model.with("comments", "")
+            }
+
+            template.render(model)
+        }.joinToString("\n"))
+
+        sb.append("\n        else -> throw RuntimeException(\"不支持的 ProtoID: \$protoId\")\n" +
+                "        }\n" +
+                "    }")
+
+
+        sb.appendln().appendln("/************************************************/").appendln()
+
+        /**
+         *      InitConnect.Request::class -> 1001
+        InitConnect.Response::class -> 1001
+         */
+
+        val templateTxt2 = "\t{{type}}.Request::class -> {{protoId}}\n\t{{type}}.Response::class -> {{protoId}}\n"
+        val template2 = JtwigTemplate.inlineTemplate(templateTxt2)
+
+        sb.appendln("    fun protoIdOfMessage(msgKclass:KClass<*>) : Int {\n" +
+                "        return when (msgKclass) {")
+
+        sb.append(txt.split("\n").map { line ->
+            val parts = line.trim().split("""\s""".toRegex(), 3)
+            val model = JtwigModel.newModel()
+            model.with("protoId", parts[0])
+            model.with("type", parts[1].replace(".proto", "").replace("_", ""))
+
+            template2.render(model)
+        }.joinToString("\n"))
+
+        sb.appendln("\n        else -> throw RuntimeException(\"不支持的Message类别: \${msgKclass.qualifiedName}\")\n" +
+                "        }\n" +
+                "    }")
+
+        sb.appendln("/************************************************/").appendln()
+
+        return sb.toString()
+    }
+
+
+    @Comment("处理futu的proto")
+    fun futuProto(): ReplyBase {
+        val futuProtoDir = "/Users/kk/work/Futu/futuquant/futuquant/common/pb"
+
+        val destDir = "/Users/kk/ssdwork/github/sz-quant/sz-futu-protocol/src/main/proto"
+
+        FileUtil.cleanDir(destDir)
+
+        val caseConverter = CaseFormat.UPPER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL)
+
+        File(futuProtoDir).walk().filter { f -> f.extension == "proto" }
+                .forEach { f ->
+                    Logger.debug("==> ${f.name}")
+                    val newProto = f.readLines().map { line ->
+                        if (line.startsWith("package ")) {
+                            return@map "$line\noption java_package = \"sz.futu.protocol\";"
+                        } else {
+                            return@map line
+                        }
+                    }.joinToString("\n")
+
+                    val newFile = File("$destDir/${f.name}")
+                    newFile.writeText(newProto)
+                }
+
+        return ReplyBase()
+    }
+
+    @Comment("ByteBuf 相关测试")
+    fun byteBufTest(): ReplyBase {
+        val client = FutuClient(vertx = Application.vertx, ip = "192.168.3.3", port = 11111 , options = NetClientOptions())
+        client.whenClosed {
+            Logger.debug("Connection closed!")
+        }.whenReceiveMessage { msg ->
+            Logger.debug("======== 收到服务端消息 ========\n$msg")
+        }.connect()
+
+        val c2s = QotGetHistoryKL.C2S.newBuilder()
+                .setRehabType(QotCommon.RehabType.RehabType_Forward_VALUE)
+                .setKlType(QotCommon.KLType.KLType_1Min_VALUE)
+                .setSecurity(QotCommon.Security.newBuilder()
+                        .setMarket(QotCommon.QotMarket.QotMarket_CNSZ_Security_VALUE)
+                        .setCode("300052"))
+                .setBeginTime("2018-11-08")
+                .setEndTime("2018-11-09")
+                .build()
+
+        val request = QotGetHistoryKL.Request.newBuilder()
+                .setC2S(c2s)
+                .build()
+
+        val msg = FutuMessage.newMessage(request)
+
+        val future = client.sendRequest(msg)
+        Logger.debug("\n${future.get()}")
+
+        return ReplyBase()
     }
 
 }
