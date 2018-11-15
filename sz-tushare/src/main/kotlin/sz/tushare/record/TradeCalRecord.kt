@@ -14,7 +14,7 @@ import sz.scaffold.annotations.Comment
 class TradeCalRecord : RecordBase() {
 
     @Comment("交易所: SSE-上交所 SZSE-深交所")
-    var exchange_id = ""
+    var exchange = ""
 
     @Comment("日历日期")
     var cal_date = ""

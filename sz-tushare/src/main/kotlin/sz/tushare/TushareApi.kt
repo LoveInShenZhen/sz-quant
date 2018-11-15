@@ -23,10 +23,10 @@ object TushareApi {
      *
      * @param is_hs 是否沪深港通标的, N-否 H-沪股通 S-深股通
      * @param list_status 上市状态: L-上市 D-退市 P-暂停上市
-     * @param exchange_id 交易所 SSE上交所 SZSE深交所 HKEX港交所
+     * @param exchange 交易所 SSE上交所 SZSE深交所 HKEX港交所
      */
-    fun stockBasic(is_hs: String = "", list_status: String = "", exchange_id: String = ""): List<StockBasicRecord> {
-        return stockBasicAsync(is_hs, list_status, exchange_id).get()
+    fun stockBasic(is_hs: String = "", list_status: String = "", exchange: String = ""): List<StockBasicRecord> {
+        return stockBasicAsync(is_hs, list_status, exchange).get()
     }
 
     /**
@@ -36,19 +36,23 @@ object TushareApi {
      *
      * @param is_hs 是否沪深港通标的, N-否 H-沪股通 S-深股通
      * @param list_status 上市状态: L-上市 D-退市 P-暂停上市
-     * @param exchange_id 交易所 SSE上交所 SZSE深交所 HKEX港交所
+     * @param exchange 交易所 SSE上交所 SZSE深交所 HKEX港交所
      *
      * @return CompletableFuture<List<StockBasicRecord>> 调用者需要在future调用连上增加处理异常的代码
      */
-    fun stockBasicAsync(is_hs: String = "", list_status: String = "", exchange_id: String = ""): CompletableFuture<List<StockBasicRecord>> {
+    fun stockBasicAsync(is_hs: String = "", list_status: String = "", exchange: String = ""): CompletableFuture<List<StockBasicRecord>> {
         val api = ApiPayload()
         api.api_name = "stock_basic"
         api.addParam("is_hs", is_hs)
                 .addParam("list_status", list_status)
-                .addParam("exchange_id", exchange_id)
+                .addParam("exchange", exchange)
 
         api.fields = StockBasicRecord().apiFields()
         return api.sendAsync().thenApply { resultBody ->
+            val jnode = resultBody.toJsonNode()
+            jnode.fields().forEach { entry ->
+                Logger.debug("--> fieldName: ${entry.key} value: ${entry.value.asText().take(32)}")
+            }
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
             RecordBase.buildFrom<StockBasicRecord>(payload)
         }
@@ -59,13 +63,13 @@ object TushareApi {
      * 获取各大交易所交易日历数据,默认提取的是上交所
      * 参考: https://tushare.pro/document/2?doc_id=26
      *
-     * @param exchange_id 交易所: SSE-上交所 SZSE-深交所
+     * @param exchange 交易所: SSE-上交所 SZSE-深交所 默认提取的是上交所
      * @param start_date 开始日期,YYYYMMDD
      * @param end_date 结束日期,YYYYMMDD
      * @param is_open 是否交易 0-休市 1-交易
      */
-    fun tradeCal(exchange_id: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): List<TradeCalRecord> {
-        return tradeCalAsync(exchange_id, start_date, end_date, is_open).get()
+    fun tradeCal(exchange: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): List<TradeCalRecord> {
+        return tradeCalAsync(exchange, start_date, end_date, is_open).get()
     }
 
     /**
@@ -73,17 +77,17 @@ object TushareApi {
      * 获取各大交易所交易日历数据,默认提取的是上交所
      * 参考: https://tushare.pro/document/2?doc_id=26
      *
-     * @param exchange_id 交易所: SSE-上交所 SZSE-深交所
+     * @param exchange 交易所: SSE-上交所 SZSE-深交所
      * @param start_date 开始日期,YYYYMMDD
      * @param end_date 结束日期,YYYYMMDD
      * @param is_open 是否交易 0-休市 1-交易
      *
      * @return CompletableFuture<List<TradeCalRecord>> 调用者需要在future调用连上增加处理异常的代码
      */
-    fun tradeCalAsync(exchange_id: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): CompletableFuture<List<TradeCalRecord>> {
+    fun tradeCalAsync(exchange: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): CompletableFuture<List<TradeCalRecord>> {
         val api = ApiPayload()
         api.api_name = "trade_cal"
-        api.addParam("exchange_id", exchange_id)
+        api.addParam("exchange", exchange)
                 .addParam("start_date", start_date)
                 .addParam("end_date", end_date)
                 .addParam("is_open", is_open)
@@ -93,6 +97,34 @@ object TushareApi {
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
             RecordBase.buildFrom<TradeCalRecord>(payload)
         }
+    }
+
+    /**
+     * 获取上市公司基础信息
+     * 参考: https://tushare.pro/document/2?doc_id=112
+     *
+     * @param exchange 交易所代码 ，SSE上交所 SZSE深交所 ，默认SSE
+     */
+    fun stockCompanyAsync(exchange: String = "SSE"): CompletableFuture<List<StockCompany>> {
+        val api = ApiPayload()
+        api.api_name = "stock_company"
+        api.addParam("exchange", exchange)
+        api.fields = StockCompany().apiFields()
+
+        return api.sendAsync().thenApply { resultBody ->
+            val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            RecordBase.buildFrom<StockCompany>(payload)
+        }
+    }
+
+    /**
+     * 获取上市公司基础信息
+     * 参考: https://tushare.pro/document/2?doc_id=112
+     *
+     * @param exchange 交易所代码 ，SSE上交所 SZSE深交所 ，默认SSE
+     */
+    fun stockCompany(exchange: String = "SSE"): List<StockCompany> {
+        return stockCompanyAsync(exchange).get()
     }
 
     /**
@@ -238,6 +270,7 @@ object TushareApi {
         api.fields = AdjFactor().apiFields()
 
         return api.sendAsync().thenApply { resultBody ->
+//            Logger.debug("\n${resultBody.toJsonNode().toJsonPretty()}")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
             RecordBase.buildFrom<AdjFactor>(payload)
         }
@@ -1130,7 +1163,7 @@ object TushareApi {
     fun marginAsync(trade_date: String, exchange_id: String = ""): CompletableFuture<List<Margin>> {
         val api = ApiPayload()
         api.api_name = "margin"
-        api.addParam("trade_date", trade_date).addParam("exchange_id", exchange_id)
+        api.addParam("trade_date", trade_date).addParam("exchange", exchange_id)
 
         api.fields = Margin().apiFields()
 
@@ -1671,7 +1704,7 @@ object TushareApi {
      * @param start_date 开始日期
      * @param end_date 结束日期
      */
-    fun fundDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<FundDaily>   {
+    fun fundDaily(ts_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<FundDaily> {
         return fundDailyAsync(ts_code, trade_date, start_date, end_date).get()
     }
 

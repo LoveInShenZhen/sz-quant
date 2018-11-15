@@ -20,10 +20,4 @@ class AdjFactor : RecordBase() {
 
     @Comment("复权因子")
     var adj_factor = Double.NaN
-
-    @Comment("开始日期, YYYYMMDD")
-    var start_date = ""
-
-    @Comment("结束日期, YYYYMMDD")
-    var end_date = ""
 }

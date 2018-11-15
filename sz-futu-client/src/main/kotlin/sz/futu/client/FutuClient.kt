@@ -192,7 +192,7 @@ class FutuClient(val vertx: Vertx, val ip: String, val port: Int, options: NetCl
         this.connection.write(message.toBuffer())
     }
 
-    fun sendRequest(reqMessage: FutuMessage, timeOutInMs: Long = 30000): CompletableFuture<FutuMessage> {
+    fun sendRequest(reqMessage: FutuMessage, timeOutInMs: Long = 60000): CompletableFuture<FutuMessage> {
         val future = CompletableFuture<FutuMessage>()
         pendingMessageHandler[reqMessage.header.nSerialNo] = future
         sendMsg(reqMessage)

@@ -34,7 +34,7 @@ class StockBasicRecord : RecordBase() {
     var market: String = ""
 
     @Comment("交易所代码")
-    var exchange_id: String = ""
+    var exchange: String = ""
 
     @Comment("交易货币")
     var curr_type: String = ""

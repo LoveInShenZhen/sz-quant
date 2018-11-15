@@ -1,11 +1,7 @@
 package sz.api.server.controller
 
 import com.google.common.base.CaseFormat
-import io.vertx.core.buffer.Buffer
 import io.vertx.core.net.NetClientOptions
-import jodd.datetime.JDateTime
-import jodd.datetime.ext.firstDayOfYear
-import jodd.datetime.ext.lastDayOfYear
 import jodd.io.FileUtil
 import org.jtwig.JtwigModel
 import org.jtwig.JtwigTemplate
@@ -19,10 +15,11 @@ import sz.scaffold.annotations.Comment
 import sz.scaffold.controller.ApiController
 import sz.scaffold.controller.reply.ReplyBase
 import sz.scaffold.tools.BizLogicException
-import sz.scaffold.tools.logger.AnsiColor
 import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
 import sz.tushare.TushareExecutor
+import sz.tushare.data.TuDb
+import sz.tushare.data.TuDbOptions
 import sz.tushare.record.TsRecord
 import java.io.File
 
@@ -37,20 +34,9 @@ class Sample : ApiController() {
     fun hello(): HelloReply {
         val reply = HelloReply()
 
-        reply.msg = "Hello, today is ${JDateTime().toString("YYYY-MM-DD")}."
+        val data = TushareApi.adjFactor(ts_code = "000001.SZ", start_date = "20170101", end_date = "20181231")
 
-        val ts_code = "000001.SZ"
-        val date = JDateTime()
-
-        val records = TushareApi.daily(ts_code = ts_code,
-                start_date = date.firstDayOfYear().toString("YYYYMMDD"),
-                end_date = date.lastDayOfYear().toString("YYYYMMDD"))
-
-
-        val dataDir = "/Users/kk/work/tmp/tushare_data/daily/$ts_code/${date.toString("YYYY")}"
-        FileUtil.mkdirs(dataDir)
-
-        TsRecord.saveToFile("$dataDir/${JDateTime().toString("YYYY_MM_DD-hh_mm_ss")}.csv", records)
+        TsRecord.saveToFile("/Users/kk/work/tmp/del.csv", data)
 
         return reply
     }
@@ -58,12 +44,12 @@ class Sample : ApiController() {
     @Comment("临时测试")
     fun test(): ReplyBase {
 
-        for (x in 0..200) {
-            TushareExecutor.Singleton.execute {
-                Logger.debug("Task $x run...", AnsiColor.CYAN)
-            }
-        }
+        val options = TuDbOptions(dbPath = "/Users/kk/work/tushare_data",
+                executor = TushareExecutor.Singleton)
 
+        val tudb = TuDb(options)
+
+        tudb.updateLocalData()
 
         return ReplyBase()
     }
@@ -102,17 +88,22 @@ net_buy	float	Y	净成交额（万）"""
     }
 
     fun genCode4(): String {
-        val txt = """ts_code	str	Y	TS代码
-trade_date	str	Y	交易日期
-open	float	Y	开盘价(元)
-high	float	Y	最高价(元)
-low	float	Y	最低价(元)
-close	float	Y	收盘价(元)
-pre_close	float	Y	昨收盘价(元)
-change	float	Y	涨跌额(元)
-pct_change	float	Y	涨跌幅(%)
-vol	float	Y	成交量(手)
-amount	float	Y	成交额(千元)"""
+        val txt = """ts_code	str	Y	股票代码
+exchange	str	Y	交易所代码 ，SSE上交所 SZSE深交所
+chairman	str	Y	法人代表
+manager	str	Y	总经理
+secretary	str	Y	董秘
+reg_capital	float	Y	注册资本
+setup_date	str	Y	注册日期
+province	str	Y	所在省份
+city	str	Y	所在城市
+introduction	str	N	公司介绍
+website	str	Y	公司主页
+email	str	Y	电子邮件
+office	str	N	办公室
+employees	int	Y	员工人数
+main_business	str	N	主要业务及产品
+business_scope	str	N	经营范围"""
 
         val tmplateTxt = """|    @Comment("{{comment}}")
                             |    var {{fieldName}}: {{fieldType}} = {{fieldInitValue}}
@@ -274,7 +265,7 @@ amount	float	Y	成交额(千元)"""
 
     @Comment("ByteBuf 相关测试")
     fun byteBufTest(): ReplyBase {
-        val client = FutuClient(vertx = Application.vertx, ip = "192.168.3.3", port = 11111 , options = NetClientOptions())
+        val client = FutuClient(vertx = Application.vertx, ip = "192.168.3.3", port = 11111, options = NetClientOptions())
         client.whenClosed {
             Logger.debug("Connection closed!")
         }.whenReceiveMessage { msg ->
@@ -287,7 +278,7 @@ amount	float	Y	成交额(千元)"""
                 .setSecurity(QotCommon.Security.newBuilder()
                         .setMarket(QotCommon.QotMarket.QotMarket_CNSZ_Security_VALUE)
                         .setCode("300052"))
-                .setBeginTime("2018-11-08")
+                .setBeginTime("2018-01-01")
                 .setEndTime("2018-11-09")
                 .build()
 
@@ -298,7 +289,12 @@ amount	float	Y	成交额(千元)"""
         val msg = FutuMessage.newMessage(request)
 
         val future = client.sendRequest(msg)
-        Logger.debug("\n${future.get()}")
+
+        val responseMsg = future.get().body as QotGetHistoryKL.Response
+
+        Logger.debug("\n$responseMsg")
+
+        Logger.debug("total records: ${responseMsg.s2C.klListCount}")
 
         return ReplyBase()
     }

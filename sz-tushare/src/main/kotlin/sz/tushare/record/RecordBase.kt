@@ -134,9 +134,9 @@ open class RecordBase {
                 throw BizLogicException("result code: ${resultPayload.code}, msg: ${resultPayload.msg}")
             }
 
-            return resultPayload.data.items.map { values ->
+            return resultPayload.data!!.items.map { values ->
                 val bean = T::class.java.newInstance()
-                bean.fillData(resultPayload.data.fields, values)
+                bean.fillData(resultPayload.data!!.fields, values)
                 bean
             }
         }

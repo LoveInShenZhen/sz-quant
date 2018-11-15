@@ -47,7 +47,7 @@ class ApiPayload {
     }
 
     fun sendAsync(): CompletableFuture<String> {
-        Logger.debug("post json:\n${this.toJsonPretty()}")
+//        Logger.debug("post json:\n${this.toJsonPretty()}")
         val future = CompletableFuture<String>()
         val request = client.postAbs(apiUrl) { response ->
             response.bodyHandler { buf ->
@@ -80,7 +80,9 @@ class ResultPayload {
 
     var msg: String? = null
 
-    var data = DataPart()
+    var data: DataPart? = null
+
+    var request_id: String? = null
 }
 
 class DataPart {

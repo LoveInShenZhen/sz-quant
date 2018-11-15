@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit
 //
 // Created by kk on 2018/10/31.
 //
-class TushareExecutor(private val limitPerMinute: Int = 80, private val sleepTime: Long = 500, private val interval: Long = 500) : Executor {
+class TushareExecutor(private val limitPerMinute: Int = 80,
+                      private val sleepTime: Long = 500,
+                      private val interval: Long = 500) : Executor {
 
     private val taskQueue = LinkedBlockingDeque<Runnable>()
     private val counterService = Executors.newSingleThreadScheduledExecutor()
@@ -27,6 +29,7 @@ class TushareExecutor(private val limitPerMinute: Int = 80, private val sleepTim
 
         object : Thread() {
             override fun run() {
+                this.name = "TushareExecutor"
                 while (enabled) {
                     if (counter < limitPerMinute) {
                         val task = taskQueue.poll(100, TimeUnit.MICROSECONDS)
@@ -35,7 +38,7 @@ class TushareExecutor(private val limitPerMinute: Int = 80, private val sleepTim
                             try {
                                 task.run()
                                 if (interval > 0) {
-                                    Logger.debug("Task was finished and the worker thread will go to sleep $interval ms")
+//                                    Logger.debug("Task was finished and the worker thread will go to sleep $interval ms")
                                     Thread.sleep(interval)
                                 }
                             } catch (ex: Exception) {
@@ -44,7 +47,7 @@ class TushareExecutor(private val limitPerMinute: Int = 80, private val sleepTim
 
                         }
                     } else {
-                        Logger.debug("超过频率限制, seleep $sleepTime ms")
+                        Logger.debug("超过 $limitPerMinute 次/分钟 频率限制, seleep $sleepTime ms")
                         Thread.sleep(sleepTime)
                     }
 
