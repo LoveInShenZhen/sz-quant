@@ -12,13 +12,13 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class TradeCalDB(val dbOptions: TuDbOptions) : Runnable {
+class TradeCalDB(val dbOptions: TuDbOptions)  {
 
-    override fun run() {
+    fun update() {
 
         // 从 2010年开始查询, 之前的年份, 太过久远, 就不用了
         val nowYear = JDateTime().year
-        for (year in 2010..(nowYear + 1)) {
+        for (year in 2010..nowYear) {
             val dataFile = csvFile(year)
             if (dataFile.exists().not()) {
                 dbOptions.executor.execute {

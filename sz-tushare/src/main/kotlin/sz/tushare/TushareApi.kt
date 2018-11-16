@@ -25,7 +25,7 @@ object TushareApi {
      * @param list_status 上市状态: L-上市 D-退市 P-暂停上市
      * @param exchange 交易所 SSE上交所 SZSE深交所 HKEX港交所
      */
-    fun stockBasic(is_hs: String = "", list_status: String = "", exchange: String = ""): List<StockBasicRecord> {
+    fun stockBasic(is_hs: String = "", list_status: String = "", exchange: String = ""): List<StockBasic> {
         return stockBasicAsync(is_hs, list_status, exchange).get()
     }
 
@@ -40,21 +40,21 @@ object TushareApi {
      *
      * @return CompletableFuture<List<StockBasicRecord>> 调用者需要在future调用连上增加处理异常的代码
      */
-    fun stockBasicAsync(is_hs: String = "", list_status: String = "", exchange: String = ""): CompletableFuture<List<StockBasicRecord>> {
+    fun stockBasicAsync(is_hs: String = "", list_status: String = "", exchange: String = ""): CompletableFuture<List<StockBasic>> {
         val api = ApiPayload()
         api.api_name = "stock_basic"
         api.addParam("is_hs", is_hs)
                 .addParam("list_status", list_status)
                 .addParam("exchange", exchange)
 
-        api.fields = StockBasicRecord().apiFields()
+        api.fields = StockBasic().apiFields()
         return api.sendAsync().thenApply { resultBody ->
             val jnode = resultBody.toJsonNode()
             jnode.fields().forEach { entry ->
                 Logger.debug("--> fieldName: ${entry.key} value: ${entry.value.asText().take(32)}")
             }
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
-            RecordBase.buildFrom<StockBasicRecord>(payload)
+            RecordBase.buildFrom<StockBasic>(payload)
         }
     }
 
@@ -486,7 +486,7 @@ object TushareApi {
      * @param start_date 开始日期
      * @param end_date 结束日期
      */
-    fun indexWeightAsync(index_code: String, trade_date: String, start_date: String = "", end_date: String = ""): CompletableFuture<List<IndexWeight>> {
+    fun indexWeightAsync(index_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): CompletableFuture<List<IndexWeight>> {
         val api = ApiPayload()
         api.api_name = "index_weight"
         api.addParam("index_code", index_code)
@@ -513,7 +513,7 @@ object TushareApi {
      * @param start_date 开始日期
      * @param end_date 结束日期
      */
-    fun indexWeight(index_code: String, trade_date: String, start_date: String = "", end_date: String = ""): List<IndexWeight> {
+    fun indexWeight(index_code: String = "", trade_date: String = "", start_date: String = "", end_date: String = ""): List<IndexWeight> {
         return indexWeightAsync(index_code, trade_date, start_date, end_date).get()
     }
 

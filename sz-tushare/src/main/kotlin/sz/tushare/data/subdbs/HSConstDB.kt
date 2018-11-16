@@ -14,14 +14,14 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class HSConstDB(val dbOptions: TuDbOptions) : Runnable {
+class HSConstDB(val dbOptions: TuDbOptions)  {
 
-    override fun run() {
-        update("SH")
-        update("SZ")
+    fun update() {
+        updateFor("SH")
+        updateFor("SZ")
     }
 
-    private fun update(exchange: String) {
+    private fun updateFor(exchange: String) {
         val lastFile = latestFile(exchange)
         if (lastFile != null) {
             // 文件不为空, 判断文件的更新时间和当前的时间间隔天数是否小于 7 天, 小于等于7天则不需要更新, 直接退出
@@ -83,7 +83,7 @@ class HSConstDB(val dbOptions: TuDbOptions) : Runnable {
     }
 
     fun hsConstLst() : List<HsConst> {
-        this.run()
+        this.update()
         val shCsvFile = latestFile("SH")!!
         val szCsvFile = latestFile("SZ")!!
 

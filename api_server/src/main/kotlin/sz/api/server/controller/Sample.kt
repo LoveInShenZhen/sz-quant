@@ -2,6 +2,7 @@ package sz.api.server.controller
 
 import com.google.common.base.CaseFormat
 import io.vertx.core.net.NetClientOptions
+import jodd.datetime.JDateTime
 import jodd.io.FileUtil
 import org.jtwig.JtwigModel
 import org.jtwig.JtwigTemplate
@@ -34,9 +35,9 @@ class Sample : ApiController() {
     fun hello(): HelloReply {
         val reply = HelloReply()
 
-        val data = TushareApi.adjFactor(ts_code = "000001.SZ", start_date = "20170101", end_date = "20181231")
-
-        TsRecord.saveToFile("/Users/kk/work/tmp/del.csv", data)
+//        val data = TushareApi.adjFactor(ts_code = "000001.SZ", start_date = "20170101", end_date = "20181231")
+//
+//        TsRecord.saveToFile("/Users/kk/work/tmp/del.csv", data)
 
         return reply
     }

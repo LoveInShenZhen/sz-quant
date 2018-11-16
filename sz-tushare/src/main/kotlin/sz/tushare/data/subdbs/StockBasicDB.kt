@@ -18,9 +18,9 @@ import java.io.File
  * 股票列表,获取基础信息数据，包括股票代码、名称、上市日期、退市日期等
  * 每周更新一次
  */
-class StockBasicDB(val dbOptions: TuDbOptions) : Runnable {
+class StockBasicDB(val dbOptions: TuDbOptions)  {
 
-    override fun run() {
+    fun update() {
         val lastFile = latestFile()
         if (lastFile != null) {
             // 文件不为空, 判断文件的更新时间和当前的时间间隔天数是否小于 7 天, 小于等于7天则不需要更新, 直接退出

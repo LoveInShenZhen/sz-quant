@@ -7,7 +7,7 @@ import sz.scaffold.annotations.Comment
 //
 // 参考: https://tushare.pro/document/2?doc_id=25
 
-class StockBasicRecord : RecordBase() {
+class StockBasic : RecordBase() {
 
     @Comment("TS代码")
     var ts_code: String = ""

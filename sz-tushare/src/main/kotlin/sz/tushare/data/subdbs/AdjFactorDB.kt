@@ -5,6 +5,7 @@ import jodd.io.FileNameUtil
 import jodd.io.FileUtil
 import jodd.io.findfile.FindFile
 import sz.scaffold.tools.logger.Logger
+import sz.scaffold.tools.logger.colorDebug
 import sz.tushare.TushareApi
 import sz.tushare.data.TuDbOptions
 import sz.tushare.record.TsRecord
@@ -13,12 +14,15 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpdate: Boolean = false) : Runnable {
-    override fun run() {
-        update(ts_code)
+class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpdate: Boolean = false)  {
+
+    val logger = Logger.of("tushare")
+    
+    fun update() {
+        updateFor(ts_code)
     }
 
-    private fun update(ts_code: String) {
+    private fun updateFor(ts_code: String) {
         if (this.forceUpdate.not()) {
             val lastFile = latestFile(ts_code)
             if (lastFile != null) {
@@ -40,7 +44,7 @@ class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpda
             dbOptions.executor.execute {
                 val datas = TushareApi.adjFactor(ts_code)
                 TsRecord.saveToFile(dataFile, datas, append = false)
-                Logger.debug("$ts_code 复权因子数据下载完成. ${dataFile.absolutePath}")
+                logger.colorDebug("$ts_code 复权因子数据下载完成. ${dataFile.absolutePath}")
 
                 val finder = FindFile.createWildcardFF()
                         .include("*.$ts_code.adj_factor.csv")

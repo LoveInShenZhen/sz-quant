@@ -13,14 +13,14 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class StockCompanyDB(val dbOptions: TuDbOptions) : Runnable {
+class StockCompanyDB(val dbOptions: TuDbOptions)  {
 
-    override fun run() {
-        update("SSE")
-        update("SZSE")
+    fun update() {
+        updateFor("SSE")
+        updateFor("SZSE")
     }
 
-    private fun update(exchange: String) {
+    private fun updateFor(exchange: String) {
         val lastFile = latestFile(exchange)
         if (lastFile != null) {
             // 文件不为空, 判断文件的更新时间和当前的时间间隔天数是否小于 7 天, 小于等于7天则不需要更新, 直接退出
