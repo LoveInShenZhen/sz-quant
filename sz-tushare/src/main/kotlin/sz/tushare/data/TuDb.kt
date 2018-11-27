@@ -3,8 +3,8 @@ package sz.tushare.data
 import sz.scaffold.tools.logger.AnsiColor
 import sz.scaffold.tools.logger.Logger
 import sz.scaffold.tools.logger.colorDebug
-import sz.scaffold.tools.logger.colorWarn
 import sz.tushare.data.subdbs.*
+import sz.tushare.record.StockBasic
 
 //
 // Created by kk on 2018/11/15.
@@ -32,12 +32,16 @@ class TuDb(val options: TuDbOptions) {
         updateHSConst()
 
         // 下载更新沪深成分股行情数据
-//        updateAdjFactor()
-//        updateDailyBasic()
+        updateAdjFactor()
+        updateDailyBasic()
 
         // 下载更新指数数据
         updateIndexBasic()
         updateIndexWeight()
+
+        // 下载榜单数据
+        updateHsgtTop10()
+        updateTopList()
 
         return this
     }
@@ -99,6 +103,24 @@ class TuDb(val options: TuDbOptions) {
     }
 
     //</editor-fold>
+
+    fun updateHsgtTop10() {
+        val subdb = HsgtTop10DB(options)
+        subdb.update()
+    }
+
+    fun updateTopList() {
+        val subdb = TopListDB(options)
+        subdb.update()
+    }
+
+    /**
+     * 获得我们默认关注的股票列表, 作为后续策略的股票池
+     * 几大指数股票包含关系,参考: https://xueqiu.com/1852961730/107999935
+     */
+    fun defaultStockPool():List<StockBasic> {
+        TODO()
+    }
 
 
 

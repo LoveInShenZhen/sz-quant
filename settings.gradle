@@ -4,4 +4,5 @@ include ':api_server'
 include ':sz-tushare'
 include ':sz-futu-protocol'
 include ':sz-futu-client'
+include ':spark-quant'
 

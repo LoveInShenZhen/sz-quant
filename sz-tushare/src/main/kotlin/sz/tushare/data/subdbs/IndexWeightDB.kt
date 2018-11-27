@@ -8,6 +8,7 @@ import sz.scaffold.tools.logger.Logger
 import sz.scaffold.tools.logger.colorDebug
 import sz.tushare.TushareApi
 import sz.tushare.data.TuDbOptions
+import sz.tushare.record.IndexWeight
 import sz.tushare.record.TsRecord
 import java.io.File
 
@@ -24,6 +25,8 @@ class IndexWeightDB(val dbOptions: TuDbOptions) {
             "399004.SZ" to "深证100R")
 
     fun update() {
+        FileUtil.mkdirs(folder())
+
         defaultIndexMap.forEach { ts_code, _ ->
             updateFor(ts_code)
         }
@@ -51,6 +54,10 @@ class IndexWeightDB(val dbOptions: TuDbOptions) {
         }
     }
 
+    fun indexWeightRecords() : List<IndexWeight> {
+        TODO()
+    }
+
     private fun needUpdate(ts_code: String): Boolean {
         val lastFile = latestFile(ts_code) ?: return true
 
@@ -60,7 +67,6 @@ class IndexWeightDB(val dbOptions: TuDbOptions) {
     }
 
     private fun csvFile(ts_code: String): File {
-        FileUtil.mkdirs(folder())
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(ts_code)))
     }
 

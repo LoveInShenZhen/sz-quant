@@ -6,19 +6,20 @@ import jodd.io.FileUtil
 import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
 import sz.tushare.data.TuDbOptions
+import sz.tushare.record.TradeCalRecord
 import sz.tushare.record.TsRecord
 import java.io.File
 
 //
 // Created by kk on 2018/11/15.
 //
-class TradeCalDB(val dbOptions: TuDbOptions)  {
+class TradeCalDB(val dbOptions: TuDbOptions) {
 
     fun update() {
 
-        // 从 2010年开始查询, 之前的年份, 太过久远, 就不用了
+        // 从 2000年开始查询, 之前的年份, 太过久远, 就不用了
         val nowYear = JDateTime().year
-        for (year in 2010..nowYear) {
+        for (year in 2000..nowYear) {
             val dataFile = csvFile(year)
             if (dataFile.exists().not()) {
                 dbOptions.executor.execute {
@@ -47,5 +48,15 @@ class TradeCalDB(val dbOptions: TuDbOptions)  {
     private fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "trade_cal")
         return File(folderPath)
+    }
+
+    fun load(): List<TradeCalRecord> {
+        val nowYear = JDateTime().year
+        return (2000..nowYear).map { year ->
+            val csvFile = csvFile(year)
+            TsRecord.loadFromFile<TradeCalRecord>(csvFile)
+        }.flatMap { list ->
+            list.asIterable()
+        }.toList()
     }
 }

@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat
 import io.vertx.core.net.NetClientOptions
 import jodd.datetime.JDateTime
 import jodd.io.FileUtil
+import me.escoffier.vertx.completablefuture.VertxCompletableFuture
 import org.jtwig.JtwigModel
 import org.jtwig.JtwigTemplate
 import sz.api.server.controller.reply.HelloReply
@@ -16,6 +17,7 @@ import sz.scaffold.annotations.Comment
 import sz.scaffold.controller.ApiController
 import sz.scaffold.controller.reply.ReplyBase
 import sz.scaffold.tools.BizLogicException
+import sz.scaffold.tools.json.toJsonPretty
 import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
 import sz.tushare.TushareExecutor
@@ -35,22 +37,28 @@ class Sample : ApiController() {
     fun hello(): HelloReply {
         val reply = HelloReply()
 
-//        val data = TushareApi.adjFactor(ts_code = "000001.SZ", start_date = "20170101", end_date = "20181231")
-//
-//        TsRecord.saveToFile("/Users/kk/work/tmp/del.csv", data)
+        val data = TushareApi.hsgtTop10(ts_code = "600519.SH", start_date = "20170101", end_date = "20171231")
+
+        data.forEach {
+            Logger.debug(it.toJsonPretty())
+        }
+
+        Logger.debug("count : ${data.size}")
 
         return reply
     }
 
-    @Comment("临时测试")
+    @Comment("下载tushare数据到本地")
     fun test(): ReplyBase {
 
-        val options = TuDbOptions(dbPath = "/Users/kk/work/tushare_data",
+        val options = TuDbOptions(dbPath = "/Volumes/USBDATA/tushare_data",
                 executor = TushareExecutor.Singleton)
 
         val tudb = TuDb(options)
 
-        tudb.updateLocalData()
+        VertxCompletableFuture.supplyAsync {
+            tudb.updateLocalData()
+        }
 
         return ReplyBase()
     }

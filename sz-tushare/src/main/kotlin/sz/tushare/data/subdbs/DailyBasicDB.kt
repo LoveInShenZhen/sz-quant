@@ -24,8 +24,8 @@ class DailyBasicDB(val dbOptions: TuDbOptions, val ts_code: String) {
     private fun updateFor(ts_code: String) {
         val today = JDateTime()
 
-        // 下载从 2010 年开始的数据, 更早的暂时就不下载了
-        for (year in 2010..today.year) {
+        // 下载从 2000 年开始的数据, 更早的暂时就不下载了
+        for (year in 2000..today.year) {
             val dataFile = csvFile(ts_code, year)
             if (needUpdate(dataFile, today)) {
                 dbOptions.executor.execute {
@@ -47,6 +47,7 @@ class DailyBasicDB(val dbOptions: TuDbOptions, val ts_code: String) {
         // 300732.SZ.2018.daily_basic.csv
         val yearPart = csvFile.name.split(".")[2].toInt()
         if (yearPart < today.year) {
+            Logger.debug("$yearPart 年度的数据文件: ${csvFile.name} 已经下载完毕, 无须更新")
             return false
         } else {
             val csvFileMtime = JDateTime(csvFile.lastModified())

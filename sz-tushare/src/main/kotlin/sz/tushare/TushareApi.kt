@@ -1081,7 +1081,6 @@ object TushareApi {
         api.fields = HsgtTop10().apiFields()
 
         return api.sendAsync().thenApply { resultBody ->
-            Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
             RecordBase.buildFrom<HsgtTop10>(payload)
         }
@@ -1318,7 +1317,6 @@ object TushareApi {
         api.fields = TopList().apiFields()
 
         return api.sendAsync().thenApply { resultBody ->
-            Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
             RecordBase.buildFrom<TopList>(payload)
         }

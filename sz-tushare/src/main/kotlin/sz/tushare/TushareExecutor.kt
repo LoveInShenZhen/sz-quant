@@ -23,15 +23,16 @@ class TushareExecutor(private val limitPerMinute: Int = 80,
     private var enabled = true
 
     init {
+        // 每半分钟, 清一次计数
         counterService.scheduleAtFixedRate({
             counter = 0
-        }, 60, 60, TimeUnit.SECONDS)
+        }, 31, 31, TimeUnit.SECONDS)
 
         object : Thread() {
             override fun run() {
                 this.name = "TushareExecutor"
                 while (enabled) {
-                    if (counter < limitPerMinute) {
+                    if (counter < limitPerMinute / 2) {
                         val task = taskQueue.poll(100, TimeUnit.MICROSECONDS)
                         if (task != null) {
                             counter++
