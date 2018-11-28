@@ -68,7 +68,7 @@ object TushareApi {
      * @param end_date 结束日期,YYYYMMDD
      * @param is_open 是否交易 0-休市 1-交易
      */
-    fun tradeCal(exchange: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): List<TradeCalRecord> {
+    fun tradeCal(exchange: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): List<TradeCal> {
         return tradeCalAsync(exchange, start_date, end_date, is_open).get()
     }
 
@@ -84,7 +84,7 @@ object TushareApi {
      *
      * @return CompletableFuture<List<TradeCalRecord>> 调用者需要在future调用连上增加处理异常的代码
      */
-    fun tradeCalAsync(exchange: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): CompletableFuture<List<TradeCalRecord>> {
+    fun tradeCalAsync(exchange: String = "", start_date: String = "", end_date: String = "", is_open: String = ""): CompletableFuture<List<TradeCal>> {
         val api = ApiPayload()
         api.api_name = "trade_cal"
         api.addParam("exchange", exchange)
@@ -92,10 +92,10 @@ object TushareApi {
                 .addParam("end_date", end_date)
                 .addParam("is_open", is_open)
 
-        api.fields = TradeCalRecord().apiFields()
+        api.fields = TradeCal().apiFields()
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
-            RecordBase.buildFrom<TradeCalRecord>(payload)
+            RecordBase.buildFrom<TradeCal>(payload)
         }
     }
 

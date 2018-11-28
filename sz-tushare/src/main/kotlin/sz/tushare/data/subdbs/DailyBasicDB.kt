@@ -13,11 +13,12 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class DailyBasicDB(val dbOptions: TuDbOptions, val ts_code: String) {
+class DailyBasicDB(val dbOptions: TuDbOptions, val ts_code: String) : IDbFolder {
 
     val logger = Logger.of("tushare")
 
     fun update() {
+        FileUtil.mkdirs(folder())
         updateFor(ts_code)
     }
 
@@ -56,7 +57,6 @@ class DailyBasicDB(val dbOptions: TuDbOptions, val ts_code: String) {
     }
 
     private fun csvFile(ts_code: String, year: Int): File {
-        FileUtil.mkdirs(folder())
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(ts_code, year)))
     }
 
@@ -65,7 +65,7 @@ class DailyBasicDB(val dbOptions: TuDbOptions, val ts_code: String) {
         return "$ts_code.$year.daily_basic.csv"
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "daily_basic")
         return File(folderPath)
     }

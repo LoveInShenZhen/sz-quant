@@ -14,9 +14,10 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class HSConstDB(val dbOptions: TuDbOptions)  {
+class HSConstDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     fun update() {
+        FileUtil.mkdirs(folder())
         updateFor("SH")
         updateFor("SZ")
     }
@@ -61,7 +62,6 @@ class HSConstDB(val dbOptions: TuDbOptions)  {
      * 文件名模式: YYYY-MM-DD.SH.hs_const.csv and YYYY-MM-DD.SZ.hs_const.csv
      */
     private fun csvFile(exchange: String): File {
-        FileUtil.mkdirs(folder())
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(exchange)))
     }
 
@@ -77,12 +77,12 @@ class HSConstDB(val dbOptions: TuDbOptions)  {
         return finder.firstOrNull()
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "hs_const")
         return File(folderPath)
     }
 
-    fun hsConstLst() : List<HsConst> {
+    fun hsConstLst(): List<HsConst> {
         this.update()
         val shCsvFile = latestFile("SH")!!
         val szCsvFile = latestFile("SZ")!!

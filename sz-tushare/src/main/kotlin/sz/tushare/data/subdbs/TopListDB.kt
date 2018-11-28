@@ -12,7 +12,7 @@ import java.io.File
 //
 // Created by kk on 2018/11/26.
 //
-class TopListDB(val dbOptions: TuDbOptions) {
+class TopListDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     private val logger = Logger.of("tushare")
 
@@ -40,7 +40,7 @@ class TopListDB(val dbOptions: TuDbOptions) {
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(date)))
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "top_list")
         return File(folderPath)
     }

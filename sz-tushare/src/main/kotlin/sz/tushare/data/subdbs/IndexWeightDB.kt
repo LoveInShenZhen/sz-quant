@@ -15,12 +15,12 @@ import java.io.File
 //
 // Created by kk on 2018/11/16.
 //
-class IndexWeightDB(val dbOptions: TuDbOptions) {
+class IndexWeightDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     private val logger = Logger.of("tushare")
 
     // 暂时只默认下载以下的指数的权重信息数据
-    private val defaultIndexMap = mapOf("000016.SH" to  "上证50",
+    private val defaultIndexMap = mapOf("000016.SH" to "上证50",
             "399300.SZ" to "沪深300(深圳)",
             "399004.SZ" to "深证100R")
 
@@ -39,7 +39,7 @@ class IndexWeightDB(val dbOptions: TuDbOptions) {
                 val dataFile = this.csvFile(ts_code)
                 val datas = TushareApi.indexWeight(index_code = ts_code)
                 TsRecord.saveToFile(dataFile, datas)
-                logger.colorDebug("${defaultIndexMap.getOrElse(ts_code) {ts_code}} 指数成分和权重数据下载完成. ${dataFile.absolutePath}")
+                logger.colorDebug("${defaultIndexMap.getOrElse(ts_code) { ts_code }} 指数成分和权重数据下载完成. ${dataFile.absolutePath}")
 
                 val finder = FindFile.createWildcardFF()
                         .include("*.$ts_code.index_weight.csv")
@@ -54,7 +54,7 @@ class IndexWeightDB(val dbOptions: TuDbOptions) {
         }
     }
 
-    fun indexWeightRecords() : List<IndexWeight> {
+    fun indexWeightRecords(): List<IndexWeight> {
         TODO()
     }
 
@@ -82,7 +82,7 @@ class IndexWeightDB(val dbOptions: TuDbOptions) {
         return finder.firstOrNull()
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "index_weight")
         return File(folderPath)
     }

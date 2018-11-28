@@ -17,8 +17,6 @@ object ApiServer {
 
         Application.setupVertx()
 
-        Logger.debug("------------------------------------------>>>>>>>>")
-
         Application.runHttpServer()
 
     }

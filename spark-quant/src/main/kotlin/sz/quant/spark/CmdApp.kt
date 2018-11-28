@@ -15,6 +15,9 @@ import org.apache.spark.sql.types.*
 import sz.scaffold.Application
 import sz.scaffold.tools.json.toJsonPretty
 import sz.scaffold.tools.logger.Logger
+import sz.tushare.TushareExecutor
+import sz.tushare.data.TuDateset
+import sz.tushare.data.TuDbOptions
 import java.io.Serializable
 
 
@@ -22,10 +25,10 @@ import java.io.Serializable
 //
 object CmdApp {
 
-    val spark = SparkSession.builder()
+    private val spark = SparkSession.builder()
 //            .master("spark://192.168.3.3:7077")
             .master("local[4]")
-            .appName("KK").orCreate
+            .appName("KK").orCreate!!
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -34,6 +37,7 @@ object CmdApp {
         indexStock()
 //        runDatasetCreationExample()
 
+        spark.stop()
     }
 
     fun test() {
@@ -123,58 +127,10 @@ object CmdApp {
     }
 
     fun indexStock() {
-        Logger.debug("1111111111111111")
-        val dfIndexBasic = spark.read()
-                .format("CSV")
-                .option("path", "/Users/kk/work/tushare_data/index_basic")
-                .option("header", "true")
-                .option("inferSchema", "true")
-                .load()
-        dfIndexBasic.createTempView("index_basic")
-        Logger.debug("load index_basic [OK]")
-
-        val dfStockBasic = spark.read()
-                .format("CSV")
-                .option("path", "/Users/kk/work/tushare_data/stock_basic")
-                .option("header", "true")
-                .option("inferSchema", "true")
-                .load()
-        dfStockBasic.createTempView("stock_basic")
-        Logger.debug("load stock_basic [OK]")
-
-        val dfIndexWeight = spark.read()
-                .format("CSV")
-                .option("path", "/Users/kk/work/tushare_data/index_weight")
-                .option("header", "true")
-                .option("inferSchema", "true")
-                .load()
-        dfIndexWeight.createTempView("index_weight")
-        Logger.debug("load index_weight [OK]")
-
-        val sql = """
-            | select A.con_code as stock_code, C.name as stock_name, A.index_code, B.name as index_name
-            | from index_weight as A
-            | left join index_basic as B
-            | on A.index_code = B.ts_code
-            | left join stock_basic as C
-            | on A.con_code = C.ts_code""".trimMargin()
-
-        val df = spark.sql(sql)
-        df.show()
-
-        Logger.debug("total rows: ${df.count()}")
-        Logger.debug("dfIndexWeight count: ${dfIndexWeight.count()}")
-
-        val sql2 = """select distinct A.con_code, B.name from index_weight as A
-            | left join stock_basic as B
-            | on B.ts_code = A.con_code
-            | where A.trade_date >= '20181001'""".trimMargin()
-        val df2 = spark.sql(sql2)
-        Logger.debug("distinct con_code count: ${df2.count()}")
-
-        df2.foreach(ForeachFunction<Row> {
-            Logger.debug(it.toString())
-        })
+        val options = TuDbOptions(dbPath = "/Volumes/USBDATA/tushare_data",
+                executor = TushareExecutor.Singleton)
+        val tuDS = TuDateset(options, spark).loadDataset()
+        tuDS.stockCompanyDS.show()
     }
 
 }

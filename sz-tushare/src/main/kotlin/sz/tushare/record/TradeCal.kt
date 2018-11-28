@@ -11,7 +11,7 @@ import sz.scaffold.annotations.Comment
  * 交易日历
  * 参考: https://tushare.pro/document/2?doc_id=26
  */
-class TradeCalRecord : RecordBase() {
+class TradeCal : RecordBase() {
 
     @Comment("交易所: SSE-上交所 SZSE-深交所")
     var exchange = ""

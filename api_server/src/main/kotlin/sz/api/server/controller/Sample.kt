@@ -37,7 +37,7 @@ class Sample : ApiController() {
     fun hello(): HelloReply {
         val reply = HelloReply()
 
-        val data = TushareApi.hsgtTop10(ts_code = "600519.SH", start_date = "20170101", end_date = "20171231")
+        val data = TushareApi.hsgtTop10(trade_date = "20180329")
 
         data.forEach {
             Logger.debug(it.toJsonPretty())

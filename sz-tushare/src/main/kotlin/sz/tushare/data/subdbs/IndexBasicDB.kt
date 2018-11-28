@@ -26,11 +26,12 @@ import java.io.File
  * * CNI	 国证指数
  * * OTH	 其他指数
  */
-class IndexBasicDB(val dbOptions: TuDbOptions) {
+class IndexBasicDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     val logger = Logger.of("tushare")
 
     fun update() {
+        FileUtil.mkdirs(folder())
         val marketList = listOf("MSCI", "CSI", "SSE", "SZSE", "CICC", "SW", "CNI", "OTH")
         marketList.forEach {
             updateFor(it)
@@ -68,7 +69,6 @@ class IndexBasicDB(val dbOptions: TuDbOptions) {
     }
 
     private fun csvFile(market: String): File {
-        FileUtil.mkdirs(folder())
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(market)))
     }
 
@@ -84,7 +84,7 @@ class IndexBasicDB(val dbOptions: TuDbOptions) {
         return finder.firstOrNull()
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "index_basic")
         return File(folderPath)
     }

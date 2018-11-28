@@ -13,9 +13,10 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class StockCompanyDB(val dbOptions: TuDbOptions)  {
+class StockCompanyDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     fun update() {
+        FileUtil.mkdirs(folder())
         updateFor("SSE")
         updateFor("SZSE")
     }
@@ -61,7 +62,6 @@ class StockCompanyDB(val dbOptions: TuDbOptions)  {
      * 文件名模式: YYYY-MM-DD.SSE.stock_company.csv and YYYY-MM-DD.SZSE.stock_company.csv
      */
     private fun csvFile(exchange: String): File {
-        FileUtil.mkdirs(folder())
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(exchange)))
     }
 
@@ -77,7 +77,7 @@ class StockCompanyDB(val dbOptions: TuDbOptions)  {
         return finder.firstOrNull()
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "stock_company")
         return File(folderPath)
     }

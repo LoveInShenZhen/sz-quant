@@ -14,11 +14,12 @@ import java.io.File
 //
 // Created by kk on 2018/11/15.
 //
-class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpdate: Boolean = false)  {
+class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpdate: Boolean = false) : IDbFolder {
 
     val logger = Logger.of("tushare")
-    
+
     fun update() {
+        FileUtil.mkdirs(folder())
         updateFor(ts_code)
     }
 
@@ -60,7 +61,6 @@ class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpda
     }
 
     private fun csvFile(ts_code: String): File {
-        FileUtil.mkdirs(folder())
         return File(FileNameUtil.concat(folder().absolutePath, csvFileName(ts_code)))
     }
 
@@ -77,7 +77,7 @@ class AdjFactorDB(val dbOptions: TuDbOptions, val ts_code: String, val forceUpda
         return finder.firstOrNull()
     }
 
-    private fun folder(): File {
+    override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "adj_factor")
         return File(folderPath)
     }
