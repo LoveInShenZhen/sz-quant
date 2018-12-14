@@ -25,7 +25,7 @@ class HsgtTop10 : RecordBase() {
     var close: Double = Double.NaN
 
     @Comment("涨跌额")
-    var p_change: Double = Double.NaN
+    var change: Double = Double.NaN
 
     @Comment("资金排名")
     var rank: Int = -1

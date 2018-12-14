@@ -20,9 +20,7 @@ class IndexWeightDB(val dbOptions: TuDbOptions) : IDbFolder {
     private val logger = Logger.of("tushare")
 
     // 暂时只默认下载以下的指数的权重信息数据
-    private val defaultIndexMap = mapOf("000016.SH" to "上证50",
-            "399300.SZ" to "沪深300(深圳)",
-            "399004.SZ" to "深证100R")
+    private val defaultIndexMap = mapOf("399300.SZ" to "沪深300")
 
     fun update() {
         FileUtil.mkdirs(folder())
@@ -54,8 +52,9 @@ class IndexWeightDB(val dbOptions: TuDbOptions) : IDbFolder {
         }
     }
 
-    fun indexWeightRecords(): List<IndexWeight> {
-        TODO()
+    // 沪深300 指数股
+    fun hs300Records(): List<IndexWeight> {
+        return TsRecord.loadFromFile(csvFile("399300.SZ"))
     }
 
     private fun needUpdate(ts_code: String): Boolean {

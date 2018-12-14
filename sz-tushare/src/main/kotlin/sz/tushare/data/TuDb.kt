@@ -43,6 +43,8 @@ class TuDb(val options: TuDbOptions) {
         updateHsgtTop10()
         updateTopList()
 
+        Logger.debug("更新完毕")
+
         return this
     }
 
@@ -67,22 +69,18 @@ class TuDb(val options: TuDbOptions) {
     }
 
     fun updateAdjFactor() {
-        val hsConstDb = HSConstDB(options)
-        val totalList = hsConstDb.hsConstLst()
-        logger.colorDebug("下载复权因子数据, 总共 ${totalList.size} 只股票需要下载", AnsiColor.YELLOW)
+        logger.colorDebug("下载复权因子数据", AnsiColor.YELLOW)
 
-        totalList.forEach {
+        defaultStockPool().forEach {
             val subdb = AdjFactorDB(options, it.ts_code)
             subdb.update()
         }
     }
 
     fun updateDailyBasic() {
-        val hsConstDb = HSConstDB(options)
-        val totalList = hsConstDb.hsConstLst()
-        logger.colorDebug("下载每日指标数据, 总共 ${totalList.size} 只股票需要下载", AnsiColor.YELLOW)
+        logger.colorDebug("下载每日指标数据", AnsiColor.YELLOW)
 
-        totalList.forEach {
+        defaultStockPool().forEach {
             val subdb = DailyBasicDB(options, it.ts_code)
             subdb.update()
         }
@@ -116,12 +114,16 @@ class TuDb(val options: TuDbOptions) {
 
     /**
      * 获得我们默认关注的股票列表, 作为后续策略的股票池
+     * 目前只关注 沪深300 指数涵盖的股票
      * 几大指数股票包含关系,参考: https://xueqiu.com/1852961730/107999935
      */
-    fun defaultStockPool():List<StockBasic> {
-        TODO()
+    fun defaultStockPool(): List<StockBasic> {
+        val hs300Stocks = IndexWeightDB(options).hs300Records().map { it.con_code }.toSet()
+        val stockBasic = StockBasicDB(options).records()
+        return stockBasic.filter { stock ->
+            hs300Stocks.contains(stock.ts_code)
+        }
     }
-
 
 
 }

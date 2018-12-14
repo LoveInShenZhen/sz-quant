@@ -54,6 +54,9 @@ object TushareApi {
                 Logger.debug("--> fieldName: ${entry.key} value: ${entry.value.asText().take(32)}")
             }
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<StockBasic>(payload)
         }
     }
@@ -95,6 +98,9 @@ object TushareApi {
         api.fields = TradeCal().apiFields()
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<TradeCal>(payload)
         }
     }
@@ -113,6 +119,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<StockCompany>(payload)
         }
     }
@@ -146,6 +155,9 @@ object TushareApi {
         api.fields = HsConst().apiFields()
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<HsConst>(payload)
         }
     }
@@ -185,6 +197,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<NameChange>(payload)
         }
     }
@@ -231,6 +246,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Daily>(payload)
         }
     }
@@ -270,8 +288,11 @@ object TushareApi {
         api.fields = AdjFactor().apiFields()
 
         return api.sendAsync().thenApply { resultBody ->
-//            Logger.debug("\n${resultBody.toJsonNode().toJsonPretty()}")
+            //            Logger.debug("\n${resultBody.toJsonNode().toJsonPretty()}")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<AdjFactor>(payload)
         }
     }
@@ -310,6 +331,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Suspend>(payload)
         }
     }
@@ -349,6 +373,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<DailyBasic>(payload)
         }
     }
@@ -421,6 +448,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<IndexBasic>(payload)
         }
     }
@@ -458,6 +488,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<IndexDaily>(payload)
         }
     }
@@ -498,6 +531,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<IndexWeight>(payload)
         }
     }
@@ -557,6 +593,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Income>(payload)
         }
     }
@@ -619,6 +658,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<BalanceSheet>(payload)
         }
     }
@@ -680,6 +722,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Cashflow>(payload)
         }
     }
@@ -738,6 +783,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Forecast>(payload)
         }
     }
@@ -792,6 +840,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Express>(payload)
         }
     }
@@ -841,6 +892,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Dividend>(payload)
         }
     }
@@ -891,6 +945,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FinaIndicator>(payload)
         }
     }
@@ -943,6 +1000,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FinaAudit>(payload)
         }
     }
@@ -995,6 +1055,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FinaMainbz>(payload)
         }
     }
@@ -1042,6 +1105,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<MoneyflowHsgt>(payload)
         }
     }
@@ -1082,6 +1148,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<HsgtTop10>(payload)
         }
     }
@@ -1129,6 +1198,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<GgtTop10>(payload)
         }
     }
@@ -1169,6 +1241,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Margin>(payload)
         }
     }
@@ -1202,6 +1277,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<MarginDetail>(payload)
         }
     }
@@ -1242,6 +1320,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Top10Holders>(payload)
         }
     }
@@ -1284,6 +1365,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Top10FloatHolders>(payload)
         }
     }
@@ -1318,6 +1402,9 @@ object TushareApi {
 
         return api.sendAsync().thenApply { resultBody ->
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<TopList>(payload)
         }
     }
@@ -1351,6 +1438,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<TopInst>(payload)
         }
     }
@@ -1381,6 +1471,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<PledgeStat>(payload)
         }
     }
@@ -1409,6 +1502,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<PledgeDetail>(payload)
         }
     }
@@ -1442,6 +1538,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Repurchase>(payload)
         }
     }
@@ -1472,6 +1571,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<Concept>(payload)
         }
     }
@@ -1500,6 +1602,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<ConceptDetail>(payload)
         }
     }
@@ -1533,6 +1638,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FundBasic>(payload)
         }
     }
@@ -1559,6 +1667,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FundCompany>(payload)
         }
     }
@@ -1587,6 +1698,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FundNav>(payload)
         }
     }
@@ -1623,6 +1737,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FundDiv>(payload)
         }
     }
@@ -1653,6 +1770,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FundPortfolio>(payload)
         }
     }
@@ -1688,6 +1808,9 @@ object TushareApi {
         return api.sendAsync().thenApply { resultBody ->
             Logger.debug("\n$resultBody")
             val payload = Json.fromJsonString(resultBody, ResultPayload::class.java)
+            if (payload.code != 0) {
+                Logger.debug("api body:\n${api.toJsonPretty()}")
+            }
             RecordBase.buildFrom<FundDaily>(payload)
         }
     }

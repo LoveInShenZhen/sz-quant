@@ -37,7 +37,7 @@ class Daily : RecordBase() {
     var change = Double.NaN
 
     @Comment("涨跌幅")
-    var pct_change = Double.NaN
+    var pct_chg = Double.NaN
 
     @Comment("成交量 (手)")
     var vol = Double.NaN

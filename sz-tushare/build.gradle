@@ -1,18 +1,4 @@
 dependencies {
 //    compile project(':models')
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-scala
-    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.9.6'
 
-    // https://mvnrepository.com/artifact/org.apache.spark/spark-core
-    compile("org.apache.spark:spark-core_2.11:2.3.2") {
-        exclude group: 'io.netty', module: 'netty-all'
-    }
-
-    // https://mvnrepository.com/artifact/org.apache.spark/spark-sql
-    compile("org.apache.spark:spark-sql_2.11:2.3.2") {
-        exclude group: 'io.netty', module: 'netty-all'
-        exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-scala_2.11'
-    }
-
-    compile group: 'org.apache.spark', name: 'spark-mllib_2.11', version: '2.3.2'
 }

@@ -3,7 +3,6 @@
 package sz.quant.spark
 
 import jodd.io.findfile.FindFile
-import org.apache.spark.api.java.function.ForeachFunction
 import org.apache.spark.ml.linalg.VectorUDT
 import org.apache.spark.ml.linalg.Vectors
 import org.apache.spark.ml.stat.Correlation

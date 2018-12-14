@@ -21,6 +21,7 @@ class TuDateset(val options: TuDbOptions, val spark: SparkSession) {
     lateinit var indexWeightDS: Dataset<IndexWeight>
     lateinit var hsgtTop10DS: Dataset<HsgtTop10>
     lateinit var topListDS: Dataset<TopList>
+    lateinit var hs300DS: Dataset<IndexWeight>
 
     private val adjFactorDsMap = mutableMapOf<String, Dataset<AdjFactor>>()
     private val dailyBasicDsMap = mutableMapOf<String, Dataset<DailyBasic>>()
@@ -30,8 +31,6 @@ class TuDateset(val options: TuDbOptions, val spark: SparkSession) {
         tradeCalDS = loadDataSet(TradeCalDB(options))
         stockCompanyDS = loadDataSet(StockCompanyDB(options))
         hsConstDS = loadDataSet(HSConstDB(options))
-//        adjFactorDS = loadDataSet(FileNameUtil.concat(options.dbPath, "adj_factor"))
-//        dailyBasicDS = loadDataSet(FileNameUtil.concat(options.dbPath, "daily_basic"))
         indexBasicDS = loadDataSet(IndexBasicDB(options))
         indexWeightDS = loadDataSet(IndexWeightDB(options))
         hsgtTop10DS = loadDataSet(HsgtTop10DB(options))
@@ -42,19 +41,21 @@ class TuDateset(val options: TuDbOptions, val spark: SparkSession) {
 
     fun adjFactorDSof(tsCode: String): Dataset<AdjFactor> {
         return adjFactorDsMap.getOrPut(tsCode) {
-            loadDataSet(subdb = AdjFactorDB(dbOptions = options, ts_code = tsCode),
+            loadDataSet(subdb = AdjFactorDB(dbOptions = options,
+                    ts_code = tsCode),
                     prefix = "tu_${tsCode}_")
         }
     }
 
     fun dailyBasicDSof(tsCode: String): Dataset<DailyBasic> {
         return dailyBasicDsMap.getOrPut(tsCode) {
-            loadDataSet(subdb = DailyBasicDB(dbOptions = options, ts_code = tsCode),
+            loadDataSet(subdb = DailyBasicDB(dbOptions = options,
+                    ts_code = tsCode),
                     prefix = "tu_${tsCode}_")
         }
     }
 
-    private inline fun <reified T : Any> loadDataSet(subdb: IDbFolder, prefix: String = "tu_"): Dataset<T> {
+    private inline fun <reified T : Any> loadDataSet(subdb: IDbFolder, prefix: String = "tu_", createTempView: Boolean = true): Dataset<T> {
         val ds = spark.read().format("CSV")
                 .option("path", subdb.folder().absolutePath)
                 .option("header", "true")
@@ -62,12 +63,14 @@ class TuDateset(val options: TuDbOptions, val spark: SparkSession) {
                 .load()
                 .`as`(Encoders.bean(T::class.java))
 
-        ds.createTempView("$prefix${subdb.folder().name}")
+        if (createTempView) {
+            ds.createTempView("$prefix${subdb.folder().name}")
+        }
         Logger.debug("load data from folder: ${subdb.folder().absolutePath}")
         return ds
     }
 
-    private inline fun <reified T : Any> loadDataSet(dir: String): Dataset<T> {
+    private inline fun <reified T : Any> loadDataSet(dir: String, createTempView: Boolean = true): Dataset<T> {
         val folder = File(dir)
         val ds = spark.read().format("CSV")
                 .option("path", folder.absolutePath)
@@ -76,7 +79,9 @@ class TuDateset(val options: TuDbOptions, val spark: SparkSession) {
                 .load()
                 .`as`(Encoders.bean(T::class.java))
 
-        ds.createTempView("tu_${folder.name}")
+        if (createTempView) {
+            ds.createTempView("tu_${folder.name}")
+        }
         Logger.debug("load data from folder: ${folder.absolutePath}")
         return ds
     }

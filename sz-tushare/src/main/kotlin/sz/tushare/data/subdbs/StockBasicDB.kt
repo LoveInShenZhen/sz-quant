@@ -7,6 +7,7 @@ import jodd.io.findfile.FindFile
 import sz.scaffold.tools.logger.Logger
 import sz.tushare.TushareApi
 import sz.tushare.data.TuDbOptions
+import sz.tushare.record.StockBasic
 import sz.tushare.record.TsRecord
 import java.io.File
 
@@ -71,6 +72,9 @@ class StockBasicDB(val dbOptions: TuDbOptions) : IDbFolder {
         return finder.firstOrNull()
     }
 
+    fun records(): List<StockBasic> {
+        return TsRecord.loadFromFile(csvFile())
+    }
 
     override fun folder(): File {
         val folderPath = FileNameUtil.concat(dbOptions.dbPath, "stock_basic")
