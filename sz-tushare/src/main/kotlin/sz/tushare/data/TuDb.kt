@@ -30,6 +30,7 @@ class TuDb(val options: TuDbOptions) {
         updateTradeCal()
         updateStockCompany()
         updateHSConst()
+        updateIndexWeight()
 
         // 下载更新沪深成分股行情数据
         updateAdjFactor()
@@ -37,7 +38,6 @@ class TuDb(val options: TuDbOptions) {
 
         // 下载更新指数数据
         updateIndexBasic()
-        updateIndexWeight()
 
         // 下载榜单数据
         updateHsgtTop10()
@@ -69,19 +69,23 @@ class TuDb(val options: TuDbOptions) {
     }
 
     fun updateAdjFactor() {
-        logger.colorDebug("下载复权因子数据", AnsiColor.YELLOW)
+        val stockPool = defaultStockPool()
+        logger.colorDebug("下载复权因子数据, 总计: ${stockPool.size} 只股票", AnsiColor.YELLOW)
 
-        defaultStockPool().forEach {
+        stockPool.forEach {
             val subdb = AdjFactorDB(options, it.ts_code)
+            logger.colorDebug("下载复权因子数据 : ${it.ts_code} ${it.name}", AnsiColor.YELLOW)
             subdb.update()
         }
     }
 
     fun updateDailyBasic() {
-        logger.colorDebug("下载每日指标数据", AnsiColor.YELLOW)
+        val stockPool = defaultStockPool()
+        logger.colorDebug("下载每日指标数据, 总计: ${stockPool.size} 只股票", AnsiColor.YELLOW)
 
-        defaultStockPool().forEach {
+        stockPool.forEach {
             val subdb = DailyBasicDB(options, it.ts_code)
+            logger.colorDebug("下载每日指标数据 : ${it.ts_code}", AnsiColor.YELLOW)
             subdb.update()
         }
     }

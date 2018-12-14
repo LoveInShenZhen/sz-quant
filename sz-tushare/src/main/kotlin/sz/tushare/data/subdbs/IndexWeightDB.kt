@@ -34,7 +34,7 @@ class IndexWeightDB(val dbOptions: TuDbOptions) : IDbFolder {
     fun updateFor(ts_code: String) {
         if (needUpdate(ts_code)) {
             dbOptions.executor.execute {
-                val dataFile = this.csvFile(ts_code)
+                val dataFile = this.newCsvFile(ts_code)
                 val datas = TushareApi.indexWeight(index_code = ts_code)
                 TsRecord.saveToFile(dataFile, datas)
                 logger.colorDebug("${defaultIndexMap.getOrElse(ts_code) { ts_code }} 指数成分和权重数据下载完成. ${dataFile.absolutePath}")
@@ -54,7 +54,7 @@ class IndexWeightDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     // 沪深300 指数股
     fun hs300Records(): List<IndexWeight> {
-        return TsRecord.loadFromFile(csvFile("399300.SZ"))
+        return TsRecord.loadFromFile(latestFile("399300.SZ")!!)
     }
 
     private fun needUpdate(ts_code: String): Boolean {
@@ -65,11 +65,11 @@ class IndexWeightDB(val dbOptions: TuDbOptions) : IDbFolder {
         return today.month != lastFileDate.month
     }
 
-    private fun csvFile(ts_code: String): File {
-        return File(FileNameUtil.concat(folder().absolutePath, csvFileName(ts_code)))
+    private fun newCsvFile(ts_code: String): File {
+        return File(FileNameUtil.concat(folder().absolutePath, newCsvFileName(ts_code)))
     }
 
-    private fun csvFileName(ts_code: String): String {
+    private fun newCsvFileName(ts_code: String): String {
         return "${JDateTime().toString("YYYY-MM-DD")}.$ts_code.index_weight.csv"
     }
 

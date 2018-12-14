@@ -3,6 +3,7 @@ package sz.api.server.controller
 import com.google.common.base.CaseFormat
 import io.vertx.core.net.NetClientOptions
 import jodd.datetime.JDateTime
+import jodd.exception.ExceptionUtil
 import jodd.io.FileUtil
 import me.escoffier.vertx.completablefuture.VertxCompletableFuture
 import org.jtwig.JtwigModel
@@ -58,6 +59,9 @@ class Sample : ApiController() {
 
         VertxCompletableFuture.supplyAsync {
             tudb.updateLocalData()
+        }.exceptionally {
+            Logger.warn(ExceptionUtil.exceptionStackTraceToString(it))
+            tudb
         }
 
         return ReplyBase()
