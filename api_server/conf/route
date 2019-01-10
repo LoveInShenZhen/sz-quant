@@ -20,3 +20,4 @@ GET     /api/v1/sample/genCode4                                             sz.a
 GET     /api/v1/sample/genParserMapCode                                     sz.api.server.controller.Sample.genParserMapCode
 GET     /api/v1/sample/futuProto                                            sz.api.server.controller.Sample.futuProto
 GET     /api/v1/sample/byteBufTest                                          sz.api.server.controller.Sample.byteBufTest
+GET     /api/v1/sample/snippetHelper                                        sz.api.server.controller.Sample.snippetHelper

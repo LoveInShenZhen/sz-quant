@@ -2,7 +2,6 @@ package sz.api.server.controller
 
 import com.google.common.base.CaseFormat
 import io.vertx.core.net.NetClientOptions
-import jodd.datetime.JDateTime
 import jodd.exception.ExceptionUtil
 import jodd.io.FileUtil
 import me.escoffier.vertx.completablefuture.VertxCompletableFuture
@@ -24,7 +23,6 @@ import sz.tushare.TushareApi
 import sz.tushare.TushareExecutor
 import sz.tushare.data.TuDb
 import sz.tushare.data.TuDbOptions
-import sz.tushare.record.TsRecord
 import java.io.File
 
 //
@@ -51,7 +49,7 @@ class Sample : ApiController() {
 
     @Comment("下载tushare数据到本地")
     fun test(): ReplyBase {
-
+        Logger.debug("new ver......")
         val options = TuDbOptions(dbPath = "/Volumes/USBDATA/tushare_data",
                 executor = TushareExecutor.Singleton)
 
@@ -310,6 +308,15 @@ business_scope	str	N	经营范围"""
         Logger.debug("total records: ${responseMsg.s2C.klListCount}")
 
         return ReplyBase()
+    }
+
+    fun snippetHelper(): String {
+        val path = "/Users/kk/work/tmp/demo/snippet/template.kt"
+
+        val lines = File(path).readLines().map { line ->
+            line.replace("""\$[^{]""".toRegex(), "\\$\\$") }
+
+        return lines.toJsonPretty()
     }
 
 }

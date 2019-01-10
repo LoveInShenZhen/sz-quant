@@ -1,0 +1,63 @@
+apply plugin: 'application'
+
+dependencies {
+//    compile project(':sz-kcharts')
+//    compile project(':models')
+//    compile project(':sz-tushare')
+//    compile project(':sz-futu-protocol')
+//    compile project(':sz-futu-client')
+    compile files("conf")
+    compile project(':sz-tushare')
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-scala
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.9.6'
+
+    // https://mvnrepository.com/artifact/org.apache.spark/spark-core
+    compile("org.apache.spark:spark-core_2.11:2.3.2") {
+        exclude group: 'io.netty', module: 'netty-all'
+    }
+
+    // https://mvnrepository.com/artifact/org.apache.spark/spark-sql
+    compile("org.apache.spark:spark-sql_2.11:2.3.2") {
+        exclude group: 'io.netty', module: 'netty-all'
+        exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-scala_2.11'
+    }
+
+    compile group: 'org.apache.spark', name: 'spark-mllib_2.11', version: '2.3.2'
+}
+
+distZip {
+    into(project.name) {
+        from '.'
+        include 'conf/**'
+    }
+}
+
+distTar {
+    into(project.name) {
+        from '.'
+        include 'conf/**'
+    }
+}
+
+mainClassName = 'sz.quant.spark.CmdApp'
+// 可以在此添加jvm内存参数, eg: '-Xms512m', '-Xmx4096m'
+applicationDefaultJvmArgs = ['-Duser.timezone=GMT+8', '-Dfile.encoding=UTF-8', '-Dsun.jnu.encoding=UTF-8']
+
+tasks.withType(CreateStartScripts) {
+    it.unixStartScriptGenerator.template = resources.text.fromFile('unixStartScript.txt')
+}
+
+tasks.withType(JavaExec) {
+    if (project.hasProperty("debug")) {
+        def debugPort = "5005"
+        if (project.findProperty("debug").toString().isNumber()) {
+            debugPort = project.findProperty("debug").toString()
+        }
+        it.jvmArgs.add("-Xdebug")
+        it.jvmArgs.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${debugPort}")
+        println("\u001b[35m" + "Remote debug is enabled. debug port: ${debugPort}" + "\u001b[0m")
+    }
+
+    it.systemProperties(System.properties as Map<String, ?>)
+}

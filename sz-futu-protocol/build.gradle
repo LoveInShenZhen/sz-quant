@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        maven {
+            name "nexus-163"
+            url "http://mirrors.163.com/maven/repository/maven-public/"
+        }
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
+    }
+}
+
+apply plugin: 'com.google.protobuf'
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.6.1'
+
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.11'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.6.1'
+    }
+
+    generatedFilesBaseDir = "$projectDir/src/generated"
+//    generatedFilesBaseDir = "$projectDir/src/main/java"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "$projectDir/src/generated/main/java"
+        }
+    }
+}
+
+task cleanGenerated(type: Delete) {
+    delete "$projectDir/src/generated/main/java"
+    followSymlinks = true
+}

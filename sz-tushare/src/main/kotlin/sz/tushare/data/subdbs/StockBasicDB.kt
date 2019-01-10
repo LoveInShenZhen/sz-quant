@@ -73,7 +73,7 @@ class StockBasicDB(val dbOptions: TuDbOptions) : IDbFolder {
     }
 
     fun records(): List<StockBasic> {
-        return TsRecord.loadFromFile(csvFile())
+        return TsRecord.loadFromFile(latestFile()!!)
     }
 
     override fun folder(): File {

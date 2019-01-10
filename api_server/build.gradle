@@ -8,9 +8,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.58'
 
-    compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
-
-    compile project(':common_lib')
+    compile project(':sz-kcharts')
     compile project(':models')
     compile project(':sz-tushare')
     compile project(':sz-futu-protocol')
