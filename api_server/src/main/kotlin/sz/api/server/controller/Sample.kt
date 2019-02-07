@@ -49,8 +49,10 @@ class Sample : ApiController() {
 
     @Comment("下载tushare数据到本地")
     fun test(): ReplyBase {
-        Logger.debug("new ver......")
-        val options = TuDbOptions(dbPath = "/Volumes/USBDATA/tushare_data",
+//        val dbPath = "/Users/kk/work/tushare_data"
+        val dbPath = "/Volumes/USBDATA/tushare_data"
+
+        val options = TuDbOptions(dbPath = dbPath,
                 executor = TushareExecutor.Singleton)
 
         val tudb = TuDb(options)

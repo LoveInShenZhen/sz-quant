@@ -18,10 +18,10 @@ class TopListDB(val dbOptions: TuDbOptions) : IDbFolder {
 
     fun update() {
         FileUtil.mkdirs(folder())
-        // 按日获取, 获取从 2015-01-01 至今的所有交易日的龙虎榜每日交易明细
+        // 按日获取, 获取从 2000-01-01 至今的所有交易日的龙虎榜每日交易明细
         val tradeDateList = TradeCalDB(dbOptions)
                 .load()
-                .filter { it.is_open == 1 && it.cal_date >= "20150101" && it.cal_date < JDateTime().toString("YYYYMMDD") }
+                .filter { it.is_open == 1 && it.cal_date >= "20000101" && it.cal_date < JDateTime().toString("YYYYMMDD") }
 
         tradeDateList.forEach { cal ->
             val dataFile = csvFile(cal.cal_date)

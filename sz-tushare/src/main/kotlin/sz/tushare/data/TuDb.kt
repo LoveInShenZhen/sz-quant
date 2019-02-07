@@ -43,7 +43,9 @@ class TuDb(val options: TuDbOptions) {
         updateHsgtTop10()
         updateTopList()
 
-        Logger.debug("更新完毕")
+        options.executor.execute {
+            Logger.debug("更新完毕", AnsiColor.YELLOW)
+        }
 
         return this
     }
