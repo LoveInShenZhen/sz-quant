@@ -1,4 +1,4 @@
-package sz.charts.kecharts
+package sz.charts.echarts
 
 /**
  * http://www.echartsjs.com/option.html#dataset

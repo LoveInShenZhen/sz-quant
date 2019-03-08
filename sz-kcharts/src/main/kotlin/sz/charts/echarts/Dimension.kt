@@ -1,4 +1,4 @@
-package sz.charts.kecharts
+package sz.charts.echarts
 
 //
 // Created by kk on 2018-12-21.
