@@ -50,6 +50,10 @@ class TuDb(val options: TuDbOptions) {
         return this
     }
 
+    fun waitFinished() {
+        options.executor.waitFinished()
+    }
+
     fun updateStockBasic() {
         val subdb = StockBasicDB(options)
         subdb.update()

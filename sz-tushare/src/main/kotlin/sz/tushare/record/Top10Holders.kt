@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/29.
@@ -12,21 +12,21 @@ import sz.scaffold.annotations.Comment
  */
 class Top10Holders : RecordBase() {
 
-    @Comment("TS股票代码")
+    @Mark("TS股票代码")
     var ts_code: String = ""
 
-    @Comment("公告日期")
+    @Mark("公告日期")
     var ann_date: String = ""
 
-    @Comment("报告期")
+    @Mark("报告期")
     var end_date: String = ""
 
-    @Comment("股东名称")
+    @Mark("股东名称")
     var holder_name: String = ""
 
-    @Comment("持有数量（股）")
+    @Mark("持有数量（股）")
     var hold_amount: Double = Double.NaN
 
-    @Comment("持有比例")
+    @Mark("持有比例")
     var hold_ratio: Double = Double.NaN
 }

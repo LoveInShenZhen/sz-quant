@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/22.
@@ -13,51 +13,51 @@ import sz.scaffold.annotations.Comment
  */
 class DailyBasic : RecordBase() {
 
-    @Comment("股票代码")
+    @Mark("股票代码")
     var ts_code = ""
 
-    @Comment("交易日期, YYYYMMDD")
+    @Mark("交易日期, YYYYMMDD")
     var trade_date = ""
 
-    @Comment("当日收盘价")
+    @Mark("当日收盘价")
     var close = Double.NaN
 
-    @Comment("换手率")
+    @Mark("换手率")
     var turnover_rate = Double.NaN
 
-    @Comment("换手率（自由流通股）")
+    @Mark("换手率（自由流通股）")
     var turnover_rate_f = Double.NaN
 
-    @Comment("量比")
+    @Mark("量比")
     var volume_ratio = Double.NaN
 
-    @Comment("市盈率（总市值/净利润）")
+    @Mark("市盈率（总市值/净利润）")
     var pe = Double.NaN
 
-    @Comment("市盈率（TTM）")
+    @Mark("市盈率（TTM）")
     var pe_ttm = Double.NaN
 
-    @Comment("市净率（总市值/净资产）")
+    @Mark("市净率（总市值/净资产）")
     var pb = Double.NaN
 
-    @Comment("市销率")
+    @Mark("市销率")
     var ps = Double.NaN
 
-    @Comment("市销率（TTM）")
+    @Mark("市销率（TTM）")
     var ps_ttm = Double.NaN
 
-    @Comment("总股本 （万）")
+    @Mark("总股本 （万）")
     var total_share = Double.NaN
 
-    @Comment("流通股本 （万）")
+    @Mark("流通股本 （万）")
     var float_share = Double.NaN
 
-    @Comment("自由流通股本 （万）")
+    @Mark("自由流通股本 （万）")
     var free_share = Double.NaN
 
-    @Comment("总市值 （万元）")
+    @Mark("总市值 （万元）")
     var total_mv = Double.NaN
 
-    @Comment("流通市值（万元）")
+    @Mark("流通市值（万元）")
     var circ_mv = Double.NaN
 }

@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/11/1.
@@ -12,13 +12,13 @@ import sz.scaffold.annotations.Comment
  */
 class Concept : RecordBase() {
 
-    @Comment("概念分类ID")
+    @Mark("概念分类ID")
     var code: String = ""
 
-    @Comment("概念分类名称")
+    @Mark("概念分类名称")
     var name: String = ""
 
-    @Comment("来源")
+    @Mark("来源")
     var src: String = ""
 
 }

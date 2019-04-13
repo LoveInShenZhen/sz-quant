@@ -1,3 +1,4 @@
 {
-
+  "clustered" : false,
+  "workerPoolSize" : 20
 }

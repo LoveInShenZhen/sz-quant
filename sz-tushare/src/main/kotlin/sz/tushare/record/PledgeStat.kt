@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/11/1.
@@ -12,25 +12,25 @@ import sz.scaffold.annotations.Comment
  */
 class PledgeStat : RecordBase() {
 
-    @Comment("TS代码")
+    @Mark("TS代码")
     var ts_code: String = ""
 
-    @Comment("截至日期")
+    @Mark("截至日期")
     var end_date: String = ""
 
-    @Comment("质押次数")
+    @Mark("质押次数")
     var pledge_count: Int = -1
 
-    @Comment("无限售股质押数量（万）")
+    @Mark("无限售股质押数量（万）")
     var unrest_pledge: Double = Double.NaN
 
-    @Comment("限售股份质押数量（万）")
+    @Mark("限售股份质押数量（万）")
     var rest_pledge: Double = Double.NaN
 
-    @Comment("总股本")
+    @Mark("总股本")
     var total_share: Double = Double.NaN
 
-    @Comment("质押比例")
+    @Mark("质押比例")
     var pledge_ratio: Double = Double.NaN
 
 }

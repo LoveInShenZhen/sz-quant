@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/11.
@@ -9,45 +9,45 @@ import sz.scaffold.annotations.Comment
 
 class StockBasic : RecordBase() {
 
-    @Comment("TS代码")
+    @Mark("TS代码")
     var ts_code: String = ""
 
-    @Comment("股票代码")
+    @Mark("股票代码")
     var symbol: String = ""
 
-    @Comment("股票名称")
+    @Mark("股票名称")
     var name: String = ""
 
-    @Comment("所在地域")
+    @Mark("所在地域")
     var area: String = ""
 
-    @Comment("所属行业")
+    @Mark("所属行业")
     var industry: String = ""
 
-    @Comment("股票全称")
+    @Mark("股票全称")
     var fullname: String = ""
 
-    @Comment("英文全称")
+    @Mark("英文全称")
     var enname: String = ""
 
-    @Comment("市场类型 (主板/中小板/创业板)")
+    @Mark("市场类型 (主板/中小板/创业板)")
     var market: String = ""
 
-    @Comment("交易所代码")
+    @Mark("交易所代码")
     var exchange: String = ""
 
-    @Comment("交易货币")
+    @Mark("交易货币")
     var curr_type: String = ""
 
-    @Comment("上市状态: L-上市 D-退市 P-暂停上市")
+    @Mark("上市状态: L-上市 D-退市 P-暂停上市")
     var list_status: String = ""
 
-    @Comment("上市日期")
+    @Mark("上市日期")
     var list_date: String = ""
 
-    @Comment("退市日期")
+    @Mark("退市日期")
     var delist_date: String = ""
 
-    @Comment("是否沪深港通标的: N-否 H-沪股通 S-深股通")
+    @Mark("是否沪深港通标的: N-否 H-沪股通 S-深股通")
     var is_hs: String = ""
 }

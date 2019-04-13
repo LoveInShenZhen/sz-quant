@@ -1,8 +1,0 @@
-dependencies {
-    compile project(':models')
-
-    compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
-    compile group: 'com.zavtech', name: 'morpheus-core', version: '0.9.23'
-    compile group: 'com.zavtech', name: 'morpheus-viz', version: '0.9.21'
-
-}

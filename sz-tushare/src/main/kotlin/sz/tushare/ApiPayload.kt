@@ -1,11 +1,9 @@
 package sz.tushare
 
-import io.vertx.core.Vertx
-import io.vertx.core.buffer.Buffer
-import sz.scaffold.Application
+import com.typesafe.config.ConfigFactory
+import jodd.http.HttpRequest
 import sz.scaffold.tools.json.Json
-import sz.scaffold.tools.json.toJsonPretty
-import sz.scaffold.tools.logger.Logger
+import java.io.File
 import java.util.concurrent.CompletableFuture
 
 //
@@ -48,29 +46,28 @@ class ApiPayload {
 
     fun sendAsync(): CompletableFuture<String> {
 //        Logger.debug("post json:\n${this.toJsonPretty()}")
-        val future = CompletableFuture<String>()
-        val request = client.postAbs(apiUrl) { response ->
-            response.bodyHandler { buf ->
-                future.complete(buf.toString(Charsets.UTF_8))
-            }
-        }
-        val buf = Buffer.buffer(this.json(), Charsets.UTF_8.name())
-        request.putHeader("Content-Type", "application/json; charset=utf-8")
-                .putHeader("Content-Length", buf.length().toString())
-                .write(buf)
-                .end()
-
-        return future
+        return HttpRequest.post(apiUrl)
+                .header("Content-Type", "application/json; charset=utf-8")
+                .body(this.json())
+                .sendAsync()
+                .thenApply { response ->
+                    response.bodyText()
+                }
     }
 
     companion object {
+        init {
+            if (File("conf/application.conf").exists()) {
+                System.setProperty("config.file", "conf/application.conf")
+            }
+        }
+
+        val config = ConfigFactory.load()
         val apiUrl: String
-            get() = Application.config.getString("sz.tushare.url")
+            get() = config.getString("sz.tushare.url")
 
         val apiToken: String
-            get() = Application.config.getString("sz.tushare.token")
-
-        val client = Vertx.vertx().createHttpClient()
+            get() = config.getString("sz.tushare.token")
     }
 }
 

@@ -47,21 +47,4 @@
     <logger name="io.ebean.cache.COLL" level="OFF"/>
     <logger name="io.ebean.cache.NATKEY" level="OFF"/>
 
-    <!--tushare-->
-    <appender name="tushare_file" class="ch.qos.logback.core.FileAppender">
-        <file>logs/tushare.log</file>
-        <encoder>
-            <pattern>%date [%level] in %thread - %message%n%xException</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="tushare_asyncfile" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="tushare_file"/>
-    </appender>
-
-    <logger name="tushare" level="DEBUG" additivity="false">
-        <appender-ref ref="tushare_asyncfile"/>
-        <appender-ref ref="ASYNCSTDOUT"/>
-    </logger>
-
 </configuration>

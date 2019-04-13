@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/11/1.
@@ -12,49 +12,49 @@ import sz.scaffold.annotations.Comment
  */
 class TopList : RecordBase() {
 
-    @Comment("Y	交易日期")
+    @Mark("Y	交易日期")
     var trade_date: String = ""
 
-    @Comment("Y	TS代码")
+    @Mark("Y	TS代码")
     var ts_code: String = ""
 
-    @Comment("Y	名称")
+    @Mark("Y	名称")
     var name: String = ""
 
-    @Comment("Y	收盘价")
+    @Mark("Y	收盘价")
     var close: Double = Double.NaN
 
-    @Comment("Y	涨跌幅")
+    @Mark("Y	涨跌幅")
     var pct_change: Double = Double.NaN
 
-    @Comment("Y	换手率")
+    @Mark("Y	换手率")
     var turnover_rate: Double = Double.NaN
 
-    @Comment("Y	总成交额")
+    @Mark("Y	总成交额")
     var amount: Double = Double.NaN
 
-    @Comment("Y	龙虎榜卖出额")
+    @Mark("Y	龙虎榜卖出额")
     var l_sell: Double = Double.NaN
 
-    @Comment("Y	龙虎榜买入额")
+    @Mark("Y	龙虎榜买入额")
     var l_buy: Double = Double.NaN
 
-    @Comment("Y	龙虎榜成交额")
+    @Mark("Y	龙虎榜成交额")
     var l_amount: Double = Double.NaN
 
-    @Comment("Y	龙虎榜净买入额")
+    @Mark("Y	龙虎榜净买入额")
     var net_amount: Double = Double.NaN
 
-    @Comment("Y	龙虎榜净买额占比")
+    @Mark("Y	龙虎榜净买额占比")
     var net_rate: Double = Double.NaN
 
-    @Comment("Y	龙虎榜成交额占比")
+    @Mark("Y	龙虎榜成交额占比")
     var amount_rate: Double = Double.NaN
 
-    @Comment("Y	当日流通市值")
+    @Mark("Y	当日流通市值")
     var float_values: Double = Double.NaN
 
-    @Comment("Y	上榜理由")
+    @Mark("Y	上榜理由")
     var reason: String = ""
 
 }

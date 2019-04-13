@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/11/1.
@@ -12,57 +12,57 @@ import sz.scaffold.annotations.Comment
  */
 class FundCompany : RecordBase() {
 
-    @Comment("基金公司名称")
+    @Mark("基金公司名称")
     var name: String = ""
 
-    @Comment("简称")
+    @Mark("简称")
     var shortname: String = ""
 
-    @Comment("英文缩写")
+    @Mark("英文缩写")
     var short_enname: String = ""
 
-    @Comment("省份")
+    @Mark("省份")
     var province: String = ""
 
-    @Comment("城市")
+    @Mark("城市")
     var city: String = ""
 
-    @Comment("注册地址")
+    @Mark("注册地址")
     var address: String = ""
 
-    @Comment("电话")
+    @Mark("电话")
     var phone: String = ""
 
-    @Comment("办公地址")
+    @Mark("办公地址")
     var office: String = ""
 
-    @Comment("公司网址")
+    @Mark("公司网址")
     var website: String = ""
 
-    @Comment("法人代表")
+    @Mark("法人代表")
     var chairman: String = ""
 
-    @Comment("总经理")
+    @Mark("总经理")
     var manager: String = ""
 
-    @Comment("注册资本")
+    @Mark("注册资本")
     var reg_capital: Double = Double.NaN
 
-    @Comment("成立日期")
+    @Mark("成立日期")
     var setup_date: String = ""
 
-    @Comment("公司终止日期")
+    @Mark("公司终止日期")
     var end_date: String = ""
 
-    @Comment("员工总数")
+    @Mark("员工总数")
     var employees: Double = Double.NaN
 
-    @Comment("主要产品及业务")
+    @Mark("主要产品及业务")
     var main_business: String = ""
 
-    @Comment("组织机构代码")
+    @Mark("组织机构代码")
     var org_code: String = ""
 
-    @Comment("统一社会信用代码")
+    @Mark("统一社会信用代码")
     var credit_code: String = ""
 }

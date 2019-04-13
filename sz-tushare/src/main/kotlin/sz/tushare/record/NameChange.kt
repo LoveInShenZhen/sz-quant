@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/14.
@@ -12,22 +12,22 @@ import sz.scaffold.annotations.Comment
  */
 class NameChange : RecordBase() {
 
-    @Comment("TS代码")
+    @Mark("TS代码")
     var ts_code = ""
 
-    @Comment("证券名称")
+    @Mark("证券名称")
     var name = ""
 
-    @Comment("开始日期")
+    @Mark("开始日期")
     var start_date = ""
 
-    @Comment("结束日期")
+    @Mark("结束日期")
     var end_date = ""
 
-    @Comment("公告日期")
+    @Mark("公告日期")
     var ann_date = ""
 
-    @Comment("变更原因")
+    @Mark("变更原因")
     var change_reason = ""
 
 }

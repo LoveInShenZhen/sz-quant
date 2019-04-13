@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/22.
@@ -11,16 +11,16 @@ import sz.scaffold.annotations.Comment
  */
 class IndexWeight : RecordBase() {
 
-    @Comment("指数代码")
+    @Mark("指数代码")
     var index_code = ""
 
-    @Comment("成分代码")
+    @Mark("成分代码")
     var con_code = ""
 
-    @Comment("交易日期, YYYYMMDD")
+    @Mark("交易日期, YYYYMMDD")
     var trade_date = ""
 
-    @Comment("权重")
+    @Mark("权重")
     var weight = Double.NaN
 
 }

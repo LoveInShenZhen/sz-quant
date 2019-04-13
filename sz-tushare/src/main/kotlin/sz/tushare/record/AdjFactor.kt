@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/22.
@@ -12,12 +12,12 @@ import sz.scaffold.annotations.Comment
  */
 class AdjFactor : RecordBase() {
 
-    @Comment("股票代码")
+    @Mark("股票代码")
     var ts_code = ""
 
-    @Comment("交易日期, YYYYMMDD")
+    @Mark("交易日期, YYYYMMDD")
     var trade_date = ""
 
-    @Comment("复权因子")
+    @Mark("复权因子")
     var adj_factor = Double.NaN
 }

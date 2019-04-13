@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/28.
@@ -12,39 +12,39 @@ import sz.scaffold.annotations.Comment
  */
 class Forecast : RecordBase() {
 
-    @Comment("TS股票代码")
+    @Mark("TS股票代码")
     var ts_code: String = ""
 
-    @Comment("公告日期")
+    @Mark("公告日期")
     var ann_date: String = ""
 
-    @Comment("报告期")
+    @Mark("报告期")
     var end_date: String = ""
 
-    @Comment("业绩预告类型(预增/预减/扭亏/首亏/续亏/续盈/略增/略减)")
+    @Mark("业绩预告类型(预增/预减/扭亏/首亏/续亏/续盈/略增/略减)")
     var type: String = ""
 
-    @Comment("预告净利润变动幅度下限（%）")
+    @Mark("预告净利润变动幅度下限（%）")
     var p_change_min: Double = Double.NaN
 
-    @Comment("预告净利润变动幅度上限（%）")
+    @Mark("预告净利润变动幅度上限（%）")
     var p_change_max: Double = Double.NaN
 
-    @Comment("预告净利润下限（万元）")
+    @Mark("预告净利润下限（万元）")
     var net_profit_min: Double = Double.NaN
 
-    @Comment("预告净利润上限（万元）")
+    @Mark("预告净利润上限（万元）")
     var net_profit_max: Double = Double.NaN
 
-    @Comment("上年同期归属母公司净利润")
+    @Mark("上年同期归属母公司净利润")
     var last_parent_net: Double = Double.NaN
 
-    @Comment("首次公告日")
+    @Mark("首次公告日")
     var first_ann_date: String = ""
 
-    @Comment("业绩预告摘要")
+    @Mark("业绩预告摘要")
     var summary: String = ""
 
-    @Comment("业绩变动原因")
+    @Mark("业绩变动原因")
     var change_reason: String = ""
 }

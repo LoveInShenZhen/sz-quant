@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/28.
@@ -12,25 +12,25 @@ import sz.scaffold.annotations.Comment
  */
 class FinaAudit : RecordBase() {
 
-    @Comment("TS股票代码")
+    @Mark("TS股票代码")
     var ts_code: String = ""
 
-    @Comment("公告日期")
+    @Mark("公告日期")
     var ann_date: String = ""
 
-    @Comment("报告期")
+    @Mark("报告期")
     var end_date: String = ""
 
-    @Comment("审计结果")
+    @Mark("审计结果")
     var audit_result: String = ""
 
-    @Comment("审计总费用（元）")
+    @Mark("审计总费用（元）")
     var audit_fees: Double = Double.NaN
 
-    @Comment("会计事务所")
+    @Mark("会计事务所")
     var audit_agency: String = ""
 
-    @Comment("签字会计师")
+    @Mark("签字会计师")
     var audit_sign: String = ""
 
 }

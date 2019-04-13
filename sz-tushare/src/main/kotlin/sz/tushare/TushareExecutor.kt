@@ -72,6 +72,15 @@ class TushareExecutor(private val limitPerMinute: Int = 80,
         counterService.shutdown()
     }
 
+    fun waitFinished() {
+        Thread.sleep(200)
+        while (taskQueue.count() > 0) {
+            Thread.sleep(200)
+        }
+
+        close()
+    }
+
     companion object {
 
         val Singleton = TushareExecutor()

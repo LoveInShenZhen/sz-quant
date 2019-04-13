@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/22.
@@ -12,22 +12,22 @@ import sz.scaffold.annotations.Comment
  */
 class Suspend : RecordBase() {
 
-    @Comment("股票代码")
+    @Mark("股票代码")
     var ts_code = ""
 
-    @Comment("停牌日期, YYYYMMDD")
+    @Mark("停牌日期, YYYYMMDD")
     var suspend_date = ""
 
-    @Comment("复牌日期, YYYYMMDD")
+    @Mark("复牌日期, YYYYMMDD")
     var resume_date = ""
 
-    @Comment("公告日期, YYYYMMDD")
+    @Mark("公告日期, YYYYMMDD")
     var ann_date = ""
 
-    @Comment("停牌原因")
+    @Mark("停牌原因")
     var suspend_reason = ""
 
-    @Comment("停牌原因类别")
+    @Mark("停牌原因类别")
     var reason_type = ""
 
 }

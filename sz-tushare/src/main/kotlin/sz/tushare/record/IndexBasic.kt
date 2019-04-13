@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/22.
@@ -12,43 +12,43 @@ import sz.scaffold.annotations.Comment
  */
 class IndexBasic : RecordBase() {
 
-    @Comment("TS代码")
+    @Mark("TS代码")
     var ts_code = ""
 
-    @Comment("简称")
+    @Mark("简称")
     var name = ""
 
-    @Comment("指数全称")
+    @Mark("指数全称")
     var fullname = ""
 
-    @Comment("市场")
+    @Mark("市场")
     var market = ""
 
-    @Comment("发布方")
+    @Mark("发布方")
     var publisher = ""
 
-    @Comment("指数风格")
+    @Mark("指数风格")
     var index_type = ""
 
-    @Comment("指数类别")
+    @Mark("指数类别")
     var category = ""
 
-    @Comment("基期")
+    @Mark("基期")
     var base_date = ""
 
-    @Comment("基点")
+    @Mark("基点")
     var base_point = Double.NaN
 
-    @Comment("发布日期")
+    @Mark("发布日期")
     var list_date = ""
 
-    @Comment("加权方式")
+    @Mark("加权方式")
     var weight_rule = ""
 
-    @Comment("描述")
+    @Mark("描述")
     var desc = ""
 
-    @Comment("终止日期")
+    @Mark("终止日期")
     var exp_date = ""
 
 }

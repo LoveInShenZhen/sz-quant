@@ -1,6 +1,6 @@
 package sz.tushare.record
 
-import sz.scaffold.annotations.Comment
+import sz.annotations.Mark
 
 //
 // Created by kk on 2018/10/28.
@@ -12,27 +12,27 @@ import sz.scaffold.annotations.Comment
  */
 class FinaMainbz : RecordBase() {
 
-    @Comment("TS代码")
+    @Mark("TS代码")
     var ts_code: String = ""
 
-    @Comment("报告期")
+    @Mark("报告期")
     var end_date: String = ""
 
-    @Comment("主营业务来源")
+    @Mark("主营业务来源")
     var bz_item: String = ""
 
-    @Comment("主营业务收入(元)")
+    @Mark("主营业务收入(元)")
     var bz_sales: Double = Double.NaN
 
-    @Comment("主营业务利润(元)")
+    @Mark("主营业务利润(元)")
     var bz_profit: Double = Double.NaN
 
-    @Comment("主营业务成本(元)")
+    @Mark("主营业务成本(元)")
     var bz_cost: Double = Double.NaN
 
-    @Comment("货币代码")
+    @Mark("货币代码")
     var curr_type: String = ""
 
-    @Comment("是否更新")
+    @Mark("是否更新")
     var update_flag: String = ""
 }

@@ -1,8 +1,7 @@
 package sz.tushare.record
 
 import jodd.util.ClassUtil
-import sz.scaffold.annotations.Comment
-import sz.scaffold.tools.BizLogicException
+import sz.annotations.Mark
 import sz.tushare.ResultPayload
 import java.math.BigDecimal
 import kotlin.reflect.KClass
@@ -42,7 +41,7 @@ open class RecordBase {
                     propType.isSubtypeOf(Double::class.createType()) -> Double.NaN
                     propType.isSubtypeOf(Float::class.createType()) -> Float.NaN
                     // 其他类型, 但是又没有标记为允许为空, 则抛出异常
-                    else -> throw BizLogicException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value")
+                    else -> throw RuntimeException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value")
                 }
             }
         } else {
@@ -92,7 +91,7 @@ open class RecordBase {
                         }
                     }
 
-                    else -> throw BizLogicException("class: ${this.javaClass.name} 里, value: $value 的类型: ${value.javaClass.kotlin.simpleName} 与 property: ${prop.name} 的类型:${propType.jvmErasure.simpleName}不兼容")
+                    else -> throw RuntimeException("class: ${this.javaClass.name} 里, value: $value 的类型: ${value.javaClass.kotlin.simpleName} 与 property: ${prop.name} 的类型:${propType.jvmErasure.simpleName}不兼容")
                 }
 
                 if (convertedValue == null) {
@@ -101,7 +100,7 @@ open class RecordBase {
                         return null
                     } else {
                         // 属性不允许为 null
-                        throw BizLogicException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value: '$value'")
+                        throw RuntimeException("class: ${this.javaClass.name} property: ${prop.name} is marked not null, but get a null value: '$value'")
                     }
                 } else {
                     return convertedValue
@@ -113,7 +112,7 @@ open class RecordBase {
 
     fun apiFields(): String {
         return this.javaClass.kotlin.declaredMemberProperties
-                .filter { it.findAnnotation<Comment>() != null }.joinToString(",") { it.name }
+                .filter { it.findAnnotation<Mark>() != null }.joinToString(",") { it.name }
     }
 
     companion object {
@@ -131,7 +130,7 @@ open class RecordBase {
 
         inline fun <reified T : RecordBase> buildFrom(resultPayload: ResultPayload): List<T> {
             if (resultPayload.code != 0) {
-                throw BizLogicException("result code: ${resultPayload.code}, msg: ${resultPayload.msg}")
+                throw RuntimeException("result code: ${resultPayload.code}, msg: ${resultPayload.msg}")
             }
 
             return resultPayload.data!!.items.map { values ->
