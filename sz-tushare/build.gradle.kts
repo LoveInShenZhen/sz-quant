@@ -22,10 +22,12 @@ repositories {
 
 dependencies {
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30")
+    implementation(kotlin("stdlib-jdk7"))
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
 
-    api("com.github.kklongming:sz-tools:unspecified")
-    api("com.github.kklongming:jodd-dependency:unspecified")
+    api("com.github.kklongming:sz-tools:2.0.0-dev")
+    api("com.github.kklongming:jodd-dependency:2.0.0-dev")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")

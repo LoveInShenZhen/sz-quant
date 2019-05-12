@@ -25,10 +25,12 @@ repositories {
 
 dependencies {
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30")
+    implementation(kotlin("stdlib-jdk7"))
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
 
     api("commons-codec:commons-codec:1.11")
-    api("com.github.kklongming:sz-scaffold:unspecified")
+    api("com.github.kklongming:sz-scaffold:2.0.0-dev")
     api("com.google.protobuf:protobuf-java:3.6.1")
 
     // Use the Kotlin test library.

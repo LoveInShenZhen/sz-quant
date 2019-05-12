@@ -36,17 +36,6 @@ class Sample : ApiController() {
 
         Logger.debug(reply.msg)
 
-        Vertx.currentContext().executeBlocking<String>({ future ->
-            //            future.complete(reply.msg)
-            throw RuntimeException("ex: ${reply.msg}")
-        }, false, { result ->
-            if (result.failed()) {
-                Logger.warn(result.cause().message!!)
-            } else {
-                Logger.info(result.result())
-            }
-        })
-
         return reply
     }
 

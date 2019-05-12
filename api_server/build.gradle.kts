@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.31")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -32,8 +32,8 @@ dependencies {
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-    implementation("com.github.kklongming:sz-scaffold:unspecified")
-    implementation("com.github.kklongming:sz-api-doc:unspecified")
+    implementation("com.github.kklongming:sz-scaffold:2.0.0-dev")
+    implementation("com.github.kklongming:sz-api-doc:2.0.0-dev")
     implementation("org.jtwig:jtwig-core:5.87.0.RELEASE")
 
     implementation(files("conf"))

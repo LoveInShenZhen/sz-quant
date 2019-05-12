@@ -22,9 +22,9 @@ repositories {
 
 dependencies {
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.30")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.31")
 
-    api("com.github.kklongming:sz-scaffold:unspecified")
+    api("com.github.kklongming:sz-scaffold:2.0.0-dev")
     api(project(":sz-futu-protocol"))
 
     // Use the Kotlin test library.
