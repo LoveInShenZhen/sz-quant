@@ -31,10 +31,11 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    
+    implementation("org.jtwig:jtwig-core:5.87.0.RELEASE")
 
     implementation("com.github.kklongming:sz-scaffold:2.0.0-dev")
     implementation("com.github.kklongming:sz-api-doc:2.0.0-dev")
-    implementation("org.jtwig:jtwig-core:5.87.0.RELEASE")
 
     implementation(files("conf"))
     implementation(project(":sz-tushare"))

@@ -12,6 +12,13 @@ plugins {
 
 allprojects {
 
+    repositories {
+        // Use jcenter for resolving your dependencies.
+        // You can declare any Maven/Ivy/file repository here.
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
 }
 
 dependencies {
