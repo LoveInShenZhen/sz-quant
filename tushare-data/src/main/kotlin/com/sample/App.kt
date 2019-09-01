@@ -12,7 +12,8 @@ import sz.tushare.data.TuDbOptions
 
 fun main(args: Array<String>) = mainBody {
     ArgParser(args).parseInto(::AppArgs).run {
-        val dbPath = "/Volumes/USBDATA/tushare_data"
+//        val dbPath = "/Volumes/USBDATA/tushare_data"
+        val dbPath = "/Users/kk/work/tushare_data"
 
         val options = TuDbOptions(dbPath = dbPath,
                 executor = TushareExecutor.Singleton)
