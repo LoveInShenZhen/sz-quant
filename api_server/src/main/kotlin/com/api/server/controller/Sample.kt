@@ -228,7 +228,7 @@ business_scope	str	N	经营范围"""
 
         FileUtil.cleanDir(destDir)
 
-        val caseConverter = CaseFormat.UPPER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL)
+//        val caseConverter = CaseFormat.UPPER_UNDERSCORE.converterTo(CaseFormat.LOWER_CAMEL)
 
         File(futuProtoDir).walk().filter { f -> f.extension == "proto" }
                 .forEach { f ->
