@@ -26,4 +26,5 @@ dependencies {
     implementation(project(":sz-futu-protocol"))
     implementation(project(":sz-futu-client"))
     implementation(project(":api_server"))
+    implementation(project(":cmd_test"))
 }

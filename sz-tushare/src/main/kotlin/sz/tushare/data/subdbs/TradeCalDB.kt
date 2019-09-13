@@ -24,7 +24,7 @@ class TradeCalDB(val dbOptions: TuDbOptions) : IDbFolder {
             if (dataFile.exists().not()) {
                 dbOptions.executor.execute {
                     val result = TushareApi.tradeCal(start_date = "${year}0101",
-                            end_date = "${year}1231")
+                        end_date = "${year}1231")
                     TsRecord.saveToFile(dataFile, result)
                     Logger.debug("$year 年交易日历下载完毕. ${dataFile.absolutePath}")
                 }

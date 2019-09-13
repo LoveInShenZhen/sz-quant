@@ -124,14 +124,15 @@ class TuDb(val options: TuDbOptions) {
 
     /**
      * 获得我们默认关注的股票列表, 作为后续策略的股票池
-     * 目前只关注 沪深300 指数涵盖的股票
+     * 目前只关注 沪深300 指数涵盖的股票, 排除掉 ST 和 *ST
      * 几大指数股票包含关系,参考: https://xueqiu.com/1852961730/107999935
      */
     fun defaultStockPool(): List<StockBasic> {
         val hs300Stocks = IndexWeightDB(options).hs300Records().map { it.con_code }.toSet()
         val stockBasic = StockBasicDB(options).records()
         return stockBasic.filter { stock ->
-            hs300Stocks.contains(stock.ts_code)
+            // 排除掉 ST 和 *ST
+            hs300Stocks.contains(stock.ts_code) && stock.name.contains("ST", ignoreCase = true).not()
         }
     }
 

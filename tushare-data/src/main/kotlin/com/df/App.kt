@@ -2,7 +2,7 @@
  * Knowing the Name of Your Main Class
  * ref: https://stackoverflow.com/questions/14733566/how-to-run-kotlin-class-from-the-command-line?answertab=votes#tab-top
  */
-package com.sample
+package com.df
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
