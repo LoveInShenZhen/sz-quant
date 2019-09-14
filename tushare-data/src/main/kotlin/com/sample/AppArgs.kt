@@ -1,4 +1,4 @@
-package com.df
+package com.sample
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
