@@ -2,6 +2,7 @@ package sz.tushare.local
 
 import com.zavtech.morpheus.frame.DataFrame
 import com.zavtech.morpheus.util.text.parser.Parser
+import jodd.io.FileNameUtil
 import jodd.io.findfile.FindFile
 
 //
@@ -74,6 +75,18 @@ class TradeCalendarDF(val folder: String) {
         }
     }
 
+    fun preNearestTradeDayOf(baseDate: String): String {
+        val resultDF = this.dataFrame.rows().select { row ->
+            row.getValue<String>("cal_date") == baseDate
+        }
+        val row = resultDF.rows().first().get()
+        return if (row.getBoolean("is_open")) {
+            baseDate
+        } else {
+            row.getValue<String>("pretrade_date")
+        }
+    }
+
     fun nextTradeDateOf(baseDate: String, days: Int): String {
         val resultDF = this.dataFrame.rows().select { row ->
             row.getValue<String>("cal_date") > baseDate
@@ -96,5 +109,12 @@ class TradeCalendarDF(val folder: String) {
         }
 
         return resultDF.rowCount()
+    }
+
+    companion object {
+
+        fun create(tushareDataFolder: String): TradeCalendarDF {
+            return TradeCalendarDF(FileNameUtil.concat(tushareDataFolder, "trade_cal"))
+        }
     }
 }

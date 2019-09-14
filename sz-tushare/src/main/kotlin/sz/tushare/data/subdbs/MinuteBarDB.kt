@@ -5,6 +5,7 @@ import jodd.io.FileNameUtil
 import jodd.io.FileUtil
 import sz.scaffold.tools.logger.Logger
 import sz.tushare.local.StockBasicDF
+import sz.tushare.local.TradeCalendarDF
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,12 +16,6 @@ import java.time.format.DateTimeFormatter
 // Created by kk on 2019/9/13.
 //
 class MinuteBarDB(val dbPath: String, val freq: MinuteFreq) : IDbFolder {
-
-    // 分钟线数据从 2016年开始下载, 以后根据需要再做调整
-    // 分钟级别的数据, 按照1个月为时间段, 进行分段下载
-    val from_date: String = "20160101"
-
-    val logger = Logger.of("tushare")
 
     init {
         FileUtil.mkdirs(folder())
@@ -35,7 +30,7 @@ class MinuteBarDB(val dbPath: String, val freq: MinuteFreq) : IDbFolder {
      * 根据 ts_code 下载指定的股票, 从 20160101 到 当前自然月底的分钟级数据
      */
     fun update(ts_code: String) {
-        val dateFmt = DateTimeFormatter.ofPattern("yyyyMMdd")
+
         val fromDate = LocalDate.parse(from_date, dateFmt)
 
         val stockBasicDf = StockBasicDF.create(dbPath)
@@ -83,14 +78,12 @@ class MinuteBarDB(val dbPath: String, val freq: MinuteFreq) : IDbFolder {
             to = to.plusMonths(freq.monthInterval)
         }
 
-        // 对下载的最后一个数据文件, 再进行更新时间的判断, 如果当日已经更新过, 则无需下载, 否则重新下载
+        // 对下载的最后一个数据文件, 再进行更新时间的判断, 如果最近的一个交易日已经更新过, 则无需下载, 否则重新下载
         var finished = false
         val lastFile = File(csvFilePath)
+        val lastTradeDate = TradeCalendarDF.create(this.dbPath).preNearestTradeDayOf(today.yyyyMMdd()).toLocalDate()
         while (finished.not()) {
-            if (lastFile.lastModifiedTime().toLocalDate() == today) {
-                logger.info("${lastFile.name} , 今天已经更新过, 无须下载")
-                finished = true
-            } else {
+            if (lastFile.lastModifiedTime().toLocalDate().isBefore(lastTradeDate)) {
                 if (downloadAndSave(ts_code, start_date, end_date, lastFile)) {
                     finished = true
                     Thread.sleep(interval * 1000)
@@ -98,6 +91,9 @@ class MinuteBarDB(val dbPath: String, val freq: MinuteFreq) : IDbFolder {
                     logger.info("下载: ${lastFile.name} 失败, sleep $interval 秒后重试")
                     Thread.sleep(interval * 1000)
                 }
+            } else {
+                logger.info("${lastFile.name} , 在最近的一个交易日 ${lastTradeDate.yyyyMMdd()} 已经更新过, 无须下载")
+                finished = true
             }
         }
     }
@@ -129,8 +125,26 @@ class MinuteBarDB(val dbPath: String, val freq: MinuteFreq) : IDbFolder {
         return this.year == other.year && this.month == other.month
     }
 
+    fun LocalDate.yyyyMMdd(): String {
+        return this.format(dateFmt)
+    }
+
     fun File.lastModifiedTime(): LocalDateTime {
         return LocalDateTime.ofEpochSecond(this.lastModified() / 1000, 0, OffsetDateTime.now().offset)
+    }
+
+    fun String.toLocalDate(): LocalDate {
+        return LocalDate.parse(this, dateFmt)
+    }
+
+    companion object {
+        // 分钟线数据从 2016年开始下载, 以后根据需要再做调整
+        // 分钟级别的数据, 按照1个月为时间段, 进行分段下载
+        val from_date: String = "20160101"
+
+        val logger = Logger.of("tushare")
+
+        val dateFmt = DateTimeFormatter.ofPattern("yyyyMMdd")
     }
 }
 
