@@ -7,7 +7,7 @@
 
 plugins {
     java
-    id("org.jetbrains.kotlin.jvm").version("1.3.50").apply(false)
+    id("org.jetbrains.kotlin.jvm").version("1.3.71").apply(false)
 }
 
 allprojects {
